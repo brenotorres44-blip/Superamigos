@@ -235,10 +235,33 @@
 
   <!-- DETAIL PANEL -->
   <aside class="detail-panel" id="detail-panel" style="display:none">
+    <!-- Botão voltar (só aparece no mobile) -->
+    <button class="det-back-btn" onclick="window.fecharDetalhe()" style="display:none">
+      <i class="ti ti-arrow-left"></i> Voltar para famílias
+    </button>
     <div id="detail-inner"></div>
   </aside>
 
 </div><!-- /app -->
+
+<!-- Navegação inferior mobile -->
+<div id="bottom-nav">
+  <div class="bnav-inner">
+    <button class="bnav-btn active" id="bnav-familias" onclick="window.setViewMobile('familias',this)">
+      <i class="ti ti-home"></i>Famílias
+    </button>
+    <button class="bnav-btn" id="bnav-saude" onclick="window.setViewMobile('saude',this)">
+      <i class="ti ti-heart"></i>Saúde
+    </button>
+    <button class="bnav-btn" id="bnav-alertas" onclick="window.setViewMobile('alertas',this)">
+      <i class="ti ti-alert-triangle"></i>Alertas
+      <span class="bnav-badge" id="bnav-badge-alertas" style="display:none">0</span>
+    </button>
+    <button class="bnav-btn" id="bnav-novo" onclick="window.abrirModalFamilia()">
+      <i class="ti ti-plus"></i>Nova
+    </button>
+  </div>
+</div>
 
 
 <!-- ===== MODAL FAMÍLIA ===== -->
