@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperAmigos — Sistema de Famílias</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧡</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== LOADING ===== -->
+<div id="loading-screen">
+  <div class="loading-inner">
+    <svg width="80" height="70" viewBox="0 0 80 70" fill="none">
+      <!-- left -->
+      <circle cx="12" cy="13" r="7" fill="#2C2200"/>
+      <line x1="12" y1="20" x2="12" y2="42" stroke="#2C2200" stroke-width="3" stroke-linecap="round"/>
+      <line x1="12" y1="28" x2="3"  y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="28" x2="21" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="42" x2="6"  y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="42" x2="18" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- middle -->
+      <circle cx="40" cy="10" r="9" fill="#2C2200"/>
+      <line x1="40" y1="19" x2="40" y2="44" stroke="#2C2200" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="40" y1="28" x2="28" y2="38" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="40" y1="28" x2="52" y2="38" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="40" y1="44" x2="32" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="40" y1="44" x2="48" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <path d="M36 14 Q40 18 44 14" stroke="#F5C800" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- right -->
+      <circle cx="68" cy="13" r="7" fill="#2C2200"/>
+      <line x1="68" y1="20" x2="68" y2="42" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="68" y1="28" x2="59" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="68" y1="28" x2="77" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="68" y1="42" x2="62" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="68" y1="42" x2="74" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div class="loading-title">SUPERAMIGOS</div>
+    <div class="loading-sub">Carregando sistema...</div>
+    <div class="loading-bar"><div class="loading-fill"></div></div>
+  </div>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen" style="display:none">
+  <div class="login-card">
+    <svg width="70" height="62" viewBox="0 0 80 70" fill="none" style="margin:0 auto 12px;display:block">
+      <circle cx="12" cy="13" r="7" fill="#2C2200"/>
+      <line x1="12" y1="20" x2="12" y2="42" stroke="#2C2200" stroke-width="3" stroke-linecap="round"/>
+      <line x1="12" y1="28" x2="3"  y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="28" x2="21" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="42" x2="6"  y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="42" x2="18" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="40" cy="10" r="9" fill="#2C2200"/>
+      <line x1="40" y1="19" x2="40" y2="44" stroke="#2C2200" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="40" y1="28" x2="28" y2="38" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="40" y1="28" x2="52" y2="38" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="40" y1="44" x2="32" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="40" y1="44" x2="48" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <path d="M36 14 Q40 18 44 14" stroke="#F5C800" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="68" cy="13" r="7" fill="#2C2200"/>
+      <line x1="68" y1="20" x2="68" y2="42" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="68" y1="28" x2="59" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="68" y1="28" x2="77" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="68" y1="42" x2="62" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="68" y1="42" x2="74" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <h1 class="login-title">SUPERAMIGOS</h1>
+    <p class="login-sub">ONG — Sistema de Gestão de Famílias</p>
+    <p class="login-slogan">"Deus é Fiel" ✨</p>
+    <div class="login-form">
+      <div class="form-row">
+        <label class="fl">E-mail</label>
+        <input type="email" id="login-email" class="fi" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="form-row">
+        <label class="fl">Senha</label>
+        <input type="password" id="login-senha" class="fi" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div id="login-erro" class="login-erro" style="display:none"></div>
+      <button class="btn btn-gn btn-full" id="btn-login" onclick="fazerLogin()">
+        <i class="ti ti-login"></i> Entrar no sistema
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP PRINCIPAL ===== -->
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <svg width="38" height="34" viewBox="0 0 80 70" fill="none" style="flex-shrink:0">
+          <circle cx="12" cy="13" r="7" fill="#2C2200"/>
+          <line x1="12" y1="20" x2="12" y2="42" stroke="#2C2200" stroke-width="3" stroke-linecap="round"/>
+          <line x1="12" y1="28" x2="3"  y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="12" y1="28" x2="21" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="12" y1="42" x2="6"  y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="12" y1="42" x2="18" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="40" cy="10" r="9" fill="#2C2200"/>
+          <line x1="40" y1="19" x2="40" y2="44" stroke="#2C2200" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="40" y1="28" x2="28" y2="38" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+          <line x1="40" y1="28" x2="52" y2="38" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+          <line x1="40" y1="44" x2="32" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+          <line x1="40" y1="44" x2="48" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+          <path d="M36 14 Q40 18 44 14" stroke="#F5C800" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="68" cy="13" r="7" fill="#2C2200"/>
+          <line x1="68" y1="20" x2="68" y2="42" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
+          <line x1="68" y1="28" x2="59" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="68" y1="28" x2="77" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="68" y1="42" x2="62" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="68" y1="42" x2="74" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div class="logo-name">SUPERAMIGOS</div>
+          <div class="logo-sub">ONG · Famílias</div>
+        </div>
+      </div>
+      <div class="logo-slogan">✨ "Deus é Fiel" · Ajudem o sonho e o sorriso</div>
+    </div>
+
+    <div class="nav-search">
+      <i class="ti ti-search"></i>
+      <input type="text" id="searchInput" placeholder="Buscar família..." oninput="renderList()">
+    </div>
+
+    <nav>
+      <div class="nav-section">Menu</div>
+      <a class="nav-item active" id="nav-familias" onclick="setView('familias',this)">
+        <i class="ti ti-home"></i> Famílias
+      </a>
+      <a class="nav-item" id="nav-saude" onclick="setView('saude',this)">
+        <i class="ti ti-heart-rate-monitor"></i> Saúde &amp; Patologias
+      </a>
+      <a class="nav-item" id="nav-alertas" onclick="setView('alertas',this)">
+        <i class="ti ti-bell"></i> Alertas
+        <span class="nav-badge" id="badge-alertas">0</span>
+      </a>
+
+      <div class="nav-section">Bairros</div>
+      <a class="nav-item active-bairro" onclick="setBairro('')">
+        <i class="ti ti-map-pin"></i> Todos
+      </a>
+      <div id="bairro-nav"></div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="contact-title">📲 Fale conosco</div>
+      <a class="contact-link" href="https://www.instagram.com/superamigosong/" target="_blank">
+        <i class="ti ti-brand-instagram"></i> @superamigosong
+      </a>
+      <a class="contact-link" href="https://facebook.com/superamigosanos" target="_blank">
+        <i class="ti ti-brand-facebook"></i> superamigosanos
+      </a>
+      <a class="contact-link" href="https://wa.me/5511000000000" target="_blank">
+        <i class="ti ti-brand-whatsapp"></i> WhatsApp ONG
+      </a>
+      <button class="btn-logout" onclick="fazerLogout()">
+        <i class="ti ti-logout"></i> Sair
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-area">
+    <!-- stickmen background -->
+    <svg class="main-bg-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <g id="sk">
+          <circle cx="0" cy="-40" r="11"/>
+          <line x1="0" y1="-29" x2="0" y2="10"/>
+          <line x1="0" y1="-14" x2="-16" y2="4"/>
+          <line x1="0" y1="-14" x2="16" y2="4"/>
+          <line x1="0" y1="10" x2="-12" y2="34"/>
+          <line x1="0" y1="10" x2="12" y2="34"/>
+        </g>
+      </defs>
+      <g stroke="#8A6000" stroke-width="4" fill="#8A6000" stroke-linecap="round" opacity="0.55">
+        <use href="#sk" transform="translate(80,90)"/><use href="#sk" transform="translate(200,78) scale(1.1)"/><use href="#sk" transform="translate(320,92)"/><use href="#sk" transform="translate(440,80) scale(.9)"/><use href="#sk" transform="translate(560,75) scale(1.15)"/><use href="#sk" transform="translate(680,88)"/><use href="#sk" transform="translate(800,78) scale(.88)"/><use href="#sk" transform="translate(920,90) scale(1.05)"/><use href="#sk" transform="translate(1040,80)"/><use href="#sk" transform="translate(1150,92) scale(.95)"/>
+        <use href="#sk" transform="translate(40,220) scale(.9)"/><use href="#sk" transform="translate(160,235) scale(1.1)"/><use href="#sk" transform="translate(280,218)"/><use href="#sk" transform="translate(400,230) scale(1.2)"/><use href="#sk" transform="translate(520,222) scale(.9)"/><use href="#sk" transform="translate(640,232) scale(1.0)"/><use href="#sk" transform="translate(760,218) scale(.93)"/><use href="#sk" transform="translate(880,230) scale(1.1)"/><use href="#sk" transform="translate(1000,220)"/><use href="#sk" transform="translate(1120,232) scale(.87)"/>
+        <use href="#sk" transform="translate(70,360) scale(1.05)"/><use href="#sk" transform="translate(190,348) scale(.9)"/><use href="#sk" transform="translate(310,365) scale(1.12)"/><use href="#sk" transform="translate(430,350) scale(.88)"/><use href="#sk" transform="translate(550,358) scale(1.08)"/><use href="#sk" transform="translate(670,348)"/><use href="#sk" transform="translate(790,362) scale(.94)"/><use href="#sk" transform="translate(910,348) scale(1.06)"/><use href="#sk" transform="translate(1030,362) scale(.9)"/><use href="#sk" transform="translate(1145,350) scale(1.03)"/>
+        <use href="#sk" transform="translate(40,490) scale(.88)"/><use href="#sk" transform="translate(160,505) scale(1.1)"/><use href="#sk" transform="translate(280,490) scale(.92)"/><use href="#sk" transform="translate(400,502) scale(1.0)"/><use href="#sk" transform="translate(520,492) scale(1.16)"/><use href="#sk" transform="translate(640,505) scale(.86)"/><use href="#sk" transform="translate(760,490) scale(1.04)"/><use href="#sk" transform="translate(880,502) scale(.93)"/><use href="#sk" transform="translate(1000,490) scale(1.08)"/><use href="#sk" transform="translate(1140,504) scale(.9)"/>
+        <use href="#sk" transform="translate(80,630) scale(1.0)"/><use href="#sk" transform="translate(200,645) scale(.88)"/><use href="#sk" transform="translate(320,628) scale(1.12)"/><use href="#sk" transform="translate(440,640) scale(.91)"/><use href="#sk" transform="translate(560,632) scale(1.06)"/><use href="#sk" transform="translate(680,644) scale(.9)"/><use href="#sk" transform="translate(800,632) scale(1.1)"/><use href="#sk" transform="translate(920,644) scale(.85)"/><use href="#sk" transform="translate(1040,630) scale(1.03)"/><use href="#sk" transform="translate(1150,642) scale(.94)"/>
+        <use href="#sk" transform="translate(80,760) scale(.95)"/><use href="#sk" transform="translate(200,772) scale(1.08)"/><use href="#sk" transform="translate(320,758)"/><use href="#sk" transform="translate(440,770) scale(.9)"/><use href="#sk" transform="translate(560,762) scale(1.1)"/><use href="#sk" transform="translate(680,772) scale(.88)"/><use href="#sk" transform="translate(800,760) scale(1.05)"/><use href="#sk" transform="translate(920,772) scale(.92)"/><use href="#sk" transform="translate(1040,760) scale(1.0)"/><use href="#sk" transform="translate(1150,770) scale(.96)"/>
+      </g>
+    </svg>
+
+    <div class="main-wrap">
+      <!-- topbar -->
+      <header class="topbar">
+        <h2 class="topbar-title" id="view-title">🏠 Famílias cadastradas</h2>
+        <div class="topbar-actions">
+          <button class="btn btn-am" id="btn-nova-familia" onclick="abrirModalFamilia()">
+            <i class="ti ti-plus"></i> Nova família
+          </button>
+        </div>
+      </header>
+
+      <!-- stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val" id="s-familias">0</div>
+          <div class="stat-lbl">Famílias</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="s-pessoas">0</div>
+          <div class="stat-lbl">Pessoas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="s-patologias">0</div>
+          <div class="stat-lbl">Patologias</div>
+        </div>
+        <div class="stat-card stat-alert">
+          <div class="stat-val" id="s-alertas">0</div>
+          <div class="stat-lbl">Alertas</div>
+        </div>
+      </div>
+
+      <!-- list header -->
+      <div class="list-header">
+        <span id="list-label">Todas as famílias</span>
+        <span id="loading-indicator" style="display:none;font-size:12px;color:var(--tx2)">
+          <i class="ti ti-loader-2" style="animation:spin 1s linear infinite"></i> Carregando...
+        </span>
+      </div>
+
+      <!-- main list -->
+      <div class="family-list" id="family-list"></div>
+    </div>
+  </main>
+
+  <!-- DETAIL PANEL -->
+  <aside class="detail-panel" id="detail-panel" style="display:none">
+    <div id="detail-inner"></div>
+  </aside>
+
+</div><!-- /app -->
+
+
+<!-- ===== MODAL FAMÍLIA ===== -->
+<div class="modal-backdrop" id="modal-familia" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="ti ti-home"></i> <span id="modal-familia-titulo">Cadastrar nova família</span></h3>
+      <button class="modal-close" onclick="fecharModal('modal-familia')">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="f-id">
+      <div class="form-section">Identificação</div>
+      <div class="form-row">
+        <label class="fl">Nome da família *</label>
+        <input class="fi" id="f-nome" placeholder="Ex: Família Santos">
+      </div>
+      <div class="form-row">
+        <label class="fl">Nome do responsável *</label>
+        <input class="fi" id="f-resp" placeholder="Nome completo do responsável">
+      </div>
+      <div class="form-row2">
+        <div class="form-row">
+          <label class="fl">Telefone</label>
+          <input class="fi" id="f-tel" placeholder="(11) 99999-9999">
+        </div>
+        <div class="form-row">
+          <label class="fl">WhatsApp</label>
+          <input class="fi" id="f-wpp" placeholder="(11) 99999-9999">
+        </div>
+      </div>
+
+      <div class="form-section">Endereço</div>
+      <div class="form-row">
+        <label class="fl">Endereço completo</label>
+        <input class="fi" id="f-end" placeholder="Rua, número, complemento">
+      </div>
+      <div class="form-row2">
+        <div class="form-row">
+          <label class="fl">Bairro *</label>
+          <input class="fi" id="f-bairro" placeholder="Bairro">
+        </div>
+        <div class="form-row">
+          <label class="fl">CEP</label>
+          <input class="fi" id="f-cep" placeholder="00000-000">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="fl">Cidade</label>
+        <input class="fi" id="f-cidade" placeholder="São Paulo" value="São Paulo">
+      </div>
+
+      <div class="form-section">Situação socioeconômica</div>
+      <div class="form-row2">
+        <div class="form-row">
+          <label class="fl">Renda familiar</label>
+          <select class="fi" id="f-renda">
+            <option value="">Selecione</option>
+            <option>Até R$ 500</option>
+            <option>R$ 500 a R$ 1.000</option>
+            <option>R$ 1.000 a R$ 2.000</option>
+            <option>Acima de R$ 2.000</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="fl">Nº de membros</label>
+          <input class="fi" id="f-memb" type="number" min="1" placeholder="Ex: 4">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="fl">Benefício social</label>
+        <select class="fi" id="f-ben">
+          <option value="">Selecione</option>
+          <option>Bolsa Família</option>
+          <option>BPC/LOAS</option>
+          <option>Outro</option>
+          <option>Não recebe</option>
+        </select>
+      </div>
+
+      <div class="form-section">Necessidades e observações</div>
+      <div class="form-row">
+        <label class="fl">Nível de urgência da família</label>
+        <select class="fi" id="f-urgencia">
+          <option value="">Sem urgência definida</option>
+          <option value="baixa">🟡 Baixa — Necessidades básicas</option>
+          <option value="media">🟠 Média — Precisa de atenção</option>
+          <option value="alta">🔴 Alta — Situação crítica</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fl">Tipo de necessidade</label>
+        <select class="fi" id="f-tipo-nec">
+          <option value="">Selecione</option>
+          <option>🛒 Alimentação / Cesta básica</option>
+          <option>💊 Medicamentos</option>
+          <option>🏥 Atendimento médico</option>
+          <option>🦽 Equipamento médico</option>
+          <option>👕 Roupas / Calçados</option>
+          <option>🏠 Moradia / Reforma</option>
+          <option>💰 Apoio financeiro</option>
+          <option>📚 Material escolar</option>
+          <option>🤝 Voluntário / Cuidador</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fl">Descrição das necessidades</label>
+        <input class="fi" id="f-nec" placeholder="Descreva as necessidades específicas...">
+      </div>
+      <div class="form-row">
+        <label class="fl">Observações gerais</label>
+        <textarea class="fi" id="f-obs" rows="3" placeholder="Situação da família, histórico, informações relevantes..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="fecharModal('modal-familia')">Cancelar</button>
+      <button class="btn btn-gn" onclick="salvarFamilia()">
+        <i class="ti ti-check"></i> Salvar família
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PESSOA ===== -->
+<div class="modal-backdrop" id="modal-pessoa" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="ti ti-user-plus"></i> <span id="modal-pessoa-titulo">Cadastrar pessoa</span></h3>
+      <button class="modal-close" onclick="fecharModal('modal-pessoa')">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="p-id">
+      <div class="form-section">Dados pessoais</div>
+      <div class="form-row">
+        <label class="fl">Nome completo *</label>
+        <input class="fi" id="p-nome" placeholder="Nome completo">
+      </div>
+      <div class="form-row2">
+        <div class="form-row">
+          <label class="fl">Data de nascimento</label>
+          <input class="fi" id="p-nasc" type="date">
+        </div>
+        <div class="form-row">
+          <label class="fl">Sexo</label>
+          <select class="fi" id="p-sexo">
+            <option value="">Selecione</option>
+            <option>Feminino</option>
+            <option>Masculino</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="fl">Relação com responsável</label>
+        <select class="fi" id="p-rel">
+          <option value="">Selecione</option>
+          <option>Responsável</option><option>Cônjuge</option><option>Filho(a)</option>
+          <option>Pai/Mãe</option><option>Avô/Avó</option><option>Neto(a)</option>
+          <option>Irmão/Irmã</option><option>Tio(a)</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="form-row2">
+        <div class="form-row">
+          <label class="fl">CPF</label>
+          <input class="fi" id="p-cpf" placeholder="000.000.000-00">
+        </div>
+        <div class="form-row">
+          <label class="fl">Escolaridade</label>
+          <select class="fi" id="p-esc">
+            <option value="">Selecione</option>
+            <option>Educação Infantil</option><option>Ensino Fundamental</option>
+            <option>Ensino Médio</option><option>Ensino Superior</option><option>Não alfabetizado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">Saúde</div>
+      <div class="form-row">
+        <label class="fl">Status de saúde</label>
+        <select class="fi" id="p-ss">
+          <option value="ok">✅ Saudável</option>
+          <option value="monit">👁 Em acompanhamento</option>
+          <option value="alert">⚠️ Requer atenção urgente</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fl">Patologia / Doença</label>
+        <input class="fi" id="p-doe" placeholder="Ex: Diabetes Tipo 2, Asma, Hipertensão...">
+      </div>
+      <div class="form-row2">
+        <div class="form-row">
+          <label class="fl">CID</label>
+          <input class="fi" id="p-cid" placeholder="Ex: E11">
+        </div>
+        <div class="form-row">
+          <label class="fl">Medicamento</label>
+          <input class="fi" id="p-med" placeholder="Nome e dosagem">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="fl">Necessidade específica de ajuda</label>
+        <input class="fi" id="p-ajuda" placeholder="Ex: Cadeira de rodas, nebulizador, fraldas...">
+      </div>
+      <div class="form-row">
+        <label class="fl">Observações de saúde</label>
+        <textarea class="fi" id="p-obs" rows="3" placeholder="Histórico, consultas, necessidades especiais..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="fecharModal('modal-pessoa')">Cancelar</button>
+      <button class="btn btn-gn" onclick="salvarPessoa()">
+        <i class="ti ti-check"></i> Salvar pessoa
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ANÚNCIO ===== -->
+<div class="modal-backdrop" id="modal-anuncio" style="display:none">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3><i class="ti ti-speakerphone"></i> Gerar anúncio de ajuda</h3>
+      <button class="modal-close" onclick="fecharModal('modal-anuncio')">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label class="fl">Tipo de ajuda necessária</label>
+        <select class="fi" id="an-tipo" onchange="gerarAnuncio()">
+          <option value="medicamento">💊 Medicamento / Insumo médico</option>
+          <option value="equipamento">🦽 Equipamento (cadeira, nebulizador...)</option>
+          <option value="cesta">🛒 Cesta básica / Alimentos</option>
+          <option value="financeiro">💰 Apoio financeiro</option>
+          <option value="voluntario">🤝 Voluntário / Cuidador</option>
+          <option value="geral">🙏 Ajuda geral</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fl">Texto do anúncio <span style="font-weight:400;text-transform:none">(edite à vontade)</span></label>
+        <textarea class="fi" id="an-texto" rows="12" style="font-size:13px;line-height:1.65;resize:vertical"></textarea>
+      </div>
+      <div id="copy-ok" class="copy-feedback" style="display:none">✅ Texto copiado com sucesso!</div>
+    </div>
+    <div class="modal-footer" style="flex-wrap:wrap;gap:8px">
+      <button class="btn btn-am" onclick="copiarAnuncio()">
+        <i class="ti ti-copy"></i> Copiar texto
+      </button>
+      <button class="btn btn-wpp" onclick="compartilharWpp()">
+        <i class="ti ti-brand-whatsapp"></i> Enviar WhatsApp
+      </button>
+      <button class="btn btn-or" onclick="compartilharInsta()">
+        <i class="ti ti-brand-instagram"></i> Postar Instagram
+      </button>
+      <button class="btn" onclick="fecharModal('modal-anuncio')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div id="toast" class="toast" style="display:none"></div>
+
+<script type="module" src="js/app.js"></script>
+
+  <!-- Módulos SuperAmigos -->
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/familias.js"></script>
+  <script type="module" src="js/anuncio.js"></script>
+</body>
+</html>
