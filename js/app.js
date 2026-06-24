@@ -33,6 +33,8 @@ function atualizarStats() {
   s('s-patologias', totalPatologias);
   s('s-alertas',    totalAlertas);
   s('badge-alertas', totalAlertas);
+  const nb = document.getElementById('bnav-badge-alertas');
+  if(nb) { nb.textContent=totalAlertas; nb.style.display=totalAlertas>0?'flex':'none'; }
 }
 
 // ── Navegação por bairro ───────────────────────
@@ -190,7 +192,18 @@ window.selecionarFamilia = id => {
   const f = familias.find(x => x.id === id);
   if (!f) return;
   const panel = document.getElementById('detail-panel');
-  if(panel) { panel.style.display='flex'; panel.style.flexDirection='column'; }
+  const backBtn = panel?.querySelector('.det-back-btn');
+  const isMobile = window.innerWidth <= 640;
+  if(panel) {
+    panel.style.display = 'flex';
+    panel.style.flexDirection = 'column';
+    if(isMobile) {
+      // Pequeno delay para a transição funcionar
+      requestAnimationFrame(() => panel.classList.add('open'));
+      if(backBtn) backBtn.style.display = '';
+      document.body.style.overflow = 'hidden';
+    }
+  }
   import('./familias.js').then(m => m.renderDetalhe(f));
   window.renderList();
 };
@@ -198,7 +211,32 @@ window.selecionarFamilia = id => {
 window.fecharDetalhe = () => {
   setSelectedFamId(null);
   const panel = document.getElementById('detail-panel');
-  if(panel) panel.style.display = 'none';
+  const isMobile = window.innerWidth <= 640;
+  if(panel) {
+    if(isMobile) {
+      panel.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => panel.style.display = 'none', 300);
+    } else {
+      panel.style.display = 'none';
+    }
+  }
+};
+
+// ── View mobile (nav inferior) ─────────────────
+window.setViewMobile = (v, el) => {
+  // Atualiza botões nav inferior
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  // Atualiza view
+  setCurrentView(v);
+  const titles = { familias:'🏠 Famílias cadastradas', saude:'❤️ Saúde & Patologias', alertas:'⚠️ Alertas ativos' };
+  const vt = document.getElementById('view-title');
+  if(vt) vt.textContent = titles[v];
+  const bnf = document.getElementById('btn-nova-familia');
+  if(bnf) bnf.style.display = v==='familias' ? '' : 'none';
+  window.fecharDetalhe();
+  window.renderList();
 };
 
 // ── Fechar modal clicando no backdrop ──────────
