@@ -14,14 +14,12 @@
 <div id="loading-screen">
   <div class="loading-inner">
     <svg width="80" height="70" viewBox="0 0 80 70" fill="none">
-      <!-- left -->
       <circle cx="12" cy="13" r="7" fill="#2C2200"/>
       <line x1="12" y1="20" x2="12" y2="42" stroke="#2C2200" stroke-width="3" stroke-linecap="round"/>
       <line x1="12" y1="28" x2="3"  y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
       <line x1="12" y1="28" x2="21" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
       <line x1="12" y1="42" x2="6"  y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
       <line x1="12" y1="42" x2="18" y2="58" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- middle -->
       <circle cx="40" cy="10" r="9" fill="#2C2200"/>
       <line x1="40" y1="19" x2="40" y2="44" stroke="#2C2200" stroke-width="3.5" stroke-linecap="round"/>
       <line x1="40" y1="28" x2="28" y2="38" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
@@ -29,7 +27,6 @@
       <line x1="40" y1="44" x2="32" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
       <line x1="40" y1="44" x2="48" y2="62" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
       <path d="M36 14 Q40 18 44 14" stroke="#F5C800" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- right -->
       <circle cx="68" cy="13" r="7" fill="#2C2200"/>
       <line x1="68" y1="20" x2="68" y2="42" stroke="#2C2200" stroke-width="3"   stroke-linecap="round"/>
       <line x1="68" y1="28" x2="59" y2="36" stroke="#2C2200" stroke-width="2.5" stroke-linecap="round"/>
@@ -125,7 +122,30 @@
 
     <div class="nav-search">
       <i class="ti ti-search"></i>
-      <input type="text" id="searchInput" placeholder="Buscar família..." oninput="renderList()">
+      <input type="text" id="searchInput" placeholder="Buscar família, pessoa, doença..." oninput="renderList()">
+    </div>
+
+    <!-- Filtros avançados -->
+    <div class="filtros-wrap">
+      <div class="filtros-title">🔍 Filtros</div>
+      <select class="fi fi-sm" id="filtro-urgencia" onchange="window.aplicarFiltros()">
+        <option value="">Toda urgência</option>
+        <option value="alta">🔴 Alta</option>
+        <option value="media">🟠 Média</option>
+        <option value="baixa">🟡 Baixa</option>
+      </select>
+      <select class="fi fi-sm" id="filtro-tipo-nec" onchange="window.aplicarFiltros()" style="margin-top:5px">
+        <option value="">Todo tipo</option>
+        <option value="Alimentação">🛒 Alimentação</option>
+        <option value="Medicamentos">💊 Medicamentos</option>
+        <option value="Equipamento">🦽 Equipamento</option>
+        <option value="Apoio financeiro">💰 Apoio financeiro</option>
+        <option value="Voluntário">🤝 Voluntário</option>
+        <option value="Moradia">🏠 Moradia</option>
+      </select>
+      <button class="btn-limpar-filtros" onclick="window.limparFiltros()">
+        <i class="ti ti-x"></i> Limpar filtros
+      </button>
     </div>
 
     <nav>
@@ -139,6 +159,9 @@
       <a class="nav-item" id="nav-alertas" onclick="setView('alertas',this)">
         <i class="ti ti-bell"></i> Alertas
         <span class="nav-badge" id="badge-alertas">0</span>
+      </a>
+      <a class="nav-item" id="nav-relatorio" onclick="setView('relatorio',this)">
+        <i class="ti ti-chart-bar"></i> Relatório
       </a>
 
       <div class="nav-section">Bairros</div>
@@ -156,7 +179,7 @@
       <a class="contact-link" href="https://facebook.com/superamigosanos" target="_blank">
         <i class="ti ti-brand-facebook"></i> superamigosanos
       </a>
-      <a class="contact-link" href="https://wa.me/5511000000000" target="_blank">
+      <a class="contact-link" href="https://wa.me/55110000000000" target="_blank">
         <i class="ti ti-brand-whatsapp"></i> WhatsApp ONG
       </a>
       <button class="btn-logout" onclick="fazerLogout()">
@@ -167,7 +190,6 @@
 
   <!-- MAIN -->
   <main class="main-area">
-    <!-- stickmen background -->
     <svg class="main-bg-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <g id="sk">
@@ -183,14 +205,10 @@
         <use href="#sk" transform="translate(80,90)"/><use href="#sk" transform="translate(200,78) scale(1.1)"/><use href="#sk" transform="translate(320,92)"/><use href="#sk" transform="translate(440,80) scale(.9)"/><use href="#sk" transform="translate(560,75) scale(1.15)"/><use href="#sk" transform="translate(680,88)"/><use href="#sk" transform="translate(800,78) scale(.88)"/><use href="#sk" transform="translate(920,90) scale(1.05)"/><use href="#sk" transform="translate(1040,80)"/><use href="#sk" transform="translate(1150,92) scale(.95)"/>
         <use href="#sk" transform="translate(40,220) scale(.9)"/><use href="#sk" transform="translate(160,235) scale(1.1)"/><use href="#sk" transform="translate(280,218)"/><use href="#sk" transform="translate(400,230) scale(1.2)"/><use href="#sk" transform="translate(520,222) scale(.9)"/><use href="#sk" transform="translate(640,232) scale(1.0)"/><use href="#sk" transform="translate(760,218) scale(.93)"/><use href="#sk" transform="translate(880,230) scale(1.1)"/><use href="#sk" transform="translate(1000,220)"/><use href="#sk" transform="translate(1120,232) scale(.87)"/>
         <use href="#sk" transform="translate(70,360) scale(1.05)"/><use href="#sk" transform="translate(190,348) scale(.9)"/><use href="#sk" transform="translate(310,365) scale(1.12)"/><use href="#sk" transform="translate(430,350) scale(.88)"/><use href="#sk" transform="translate(550,358) scale(1.08)"/><use href="#sk" transform="translate(670,348)"/><use href="#sk" transform="translate(790,362) scale(.94)"/><use href="#sk" transform="translate(910,348) scale(1.06)"/><use href="#sk" transform="translate(1030,362) scale(.9)"/><use href="#sk" transform="translate(1145,350) scale(1.03)"/>
-        <use href="#sk" transform="translate(40,490) scale(.88)"/><use href="#sk" transform="translate(160,505) scale(1.1)"/><use href="#sk" transform="translate(280,490) scale(.92)"/><use href="#sk" transform="translate(400,502) scale(1.0)"/><use href="#sk" transform="translate(520,492) scale(1.16)"/><use href="#sk" transform="translate(640,505) scale(.86)"/><use href="#sk" transform="translate(760,490) scale(1.04)"/><use href="#sk" transform="translate(880,502) scale(.93)"/><use href="#sk" transform="translate(1000,490) scale(1.08)"/><use href="#sk" transform="translate(1140,504) scale(.9)"/>
-        <use href="#sk" transform="translate(80,630) scale(1.0)"/><use href="#sk" transform="translate(200,645) scale(.88)"/><use href="#sk" transform="translate(320,628) scale(1.12)"/><use href="#sk" transform="translate(440,640) scale(.91)"/><use href="#sk" transform="translate(560,632) scale(1.06)"/><use href="#sk" transform="translate(680,644) scale(.9)"/><use href="#sk" transform="translate(800,632) scale(1.1)"/><use href="#sk" transform="translate(920,644) scale(.85)"/><use href="#sk" transform="translate(1040,630) scale(1.03)"/><use href="#sk" transform="translate(1150,642) scale(.94)"/>
-        <use href="#sk" transform="translate(80,760) scale(.95)"/><use href="#sk" transform="translate(200,772) scale(1.08)"/><use href="#sk" transform="translate(320,758)"/><use href="#sk" transform="translate(440,770) scale(.9)"/><use href="#sk" transform="translate(560,762) scale(1.1)"/><use href="#sk" transform="translate(680,772) scale(.88)"/><use href="#sk" transform="translate(800,760) scale(1.05)"/><use href="#sk" transform="translate(920,772) scale(.92)"/><use href="#sk" transform="translate(1040,760) scale(1.0)"/><use href="#sk" transform="translate(1150,770) scale(.96)"/>
       </g>
     </svg>
 
     <div class="main-wrap">
-      <!-- topbar -->
       <header class="topbar">
         <h2 class="topbar-title" id="view-title">🏠 Famílias cadastradas</h2>
         <div class="topbar-actions">
@@ -200,7 +218,6 @@
         </div>
       </header>
 
-      <!-- stats -->
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-val" id="s-familias">0</div>
@@ -220,7 +237,6 @@
         </div>
       </div>
 
-      <!-- list header -->
       <div class="list-header">
         <span id="list-label">Todas as famílias</span>
         <span id="loading-indicator" style="display:none;font-size:12px;color:var(--tx2)">
@@ -228,14 +244,12 @@
         </span>
       </div>
 
-      <!-- main list -->
       <div class="family-list" id="family-list"></div>
     </div>
   </main>
 
   <!-- DETAIL PANEL -->
   <aside class="detail-panel" id="detail-panel" style="display:none">
-    <!-- Botão voltar (só aparece no mobile) -->
     <button class="det-back-btn" onclick="window.fecharDetalhe()" style="display:none">
       <i class="ti ti-arrow-left"></i> Voltar para famílias
     </button>
@@ -257,21 +271,21 @@
       <i class="ti ti-alert-triangle"></i>Alertas
       <span class="bnav-badge" id="bnav-badge-alertas" style="display:none">0</span>
     </button>
+    <button class="bnav-btn" id="bnav-relatorio" onclick="window.setViewMobile('relatorio',this)">
+      <i class="ti ti-chart-bar"></i>Relatório
+    </button>
     <button class="bnav-btn" id="bnav-novo" onclick="window.abrirModalFamilia()">
       <i class="ti ti-plus"></i>Nova
     </button>
   </div>
 </div>
 
-
 <!-- ===== MODAL FAMÍLIA ===== -->
 <div class="modal-backdrop" id="modal-familia" style="display:none">
   <div class="modal">
     <div class="modal-header">
       <h3><i class="ti ti-home"></i> <span id="modal-familia-titulo">Cadastrar nova família</span></h3>
-      <button class="modal-close" onclick="fecharModal('modal-familia')">
-        <i class="ti ti-x"></i>
-      </button>
+      <button class="modal-close" onclick="fecharModal('modal-familia')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="f-id">
@@ -294,7 +308,6 @@
           <input class="fi" id="f-wpp" placeholder="(11) 99999-9999">
         </div>
       </div>
-
       <div class="form-section">Endereço</div>
       <div class="form-row">
         <label class="fl">Endereço completo</label>
@@ -314,7 +327,6 @@
         <label class="fl">Cidade</label>
         <input class="fi" id="f-cidade" placeholder="São Paulo" value="São Paulo">
       </div>
-
       <div class="form-section">Situação socioeconômica</div>
       <div class="form-row2">
         <div class="form-row">
@@ -336,13 +348,10 @@
         <label class="fl">Benefício social</label>
         <select class="fi" id="f-ben">
           <option value="">Selecione</option>
-          <option>Bolsa Família</option>
-          <option>BPC/LOAS</option>
-          <option>Outro</option>
-          <option>Não recebe</option>
+          <option>Bolsa Família</option><option>BPC/LOAS</option>
+          <option>Outro</option><option>Não recebe</option>
         </select>
       </div>
-
       <div class="form-section">Necessidades e observações</div>
       <div class="form-row">
         <label class="fl">Nível de urgência da família</label>
@@ -375,7 +384,7 @@
       </div>
       <div class="form-row">
         <label class="fl">Observações gerais</label>
-        <textarea class="fi" id="f-obs" rows="3" placeholder="Situação da família, histórico, informações relevantes..."></textarea>
+        <textarea class="fi" id="f-obs" rows="3" placeholder="Situação da família, histórico..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -392,12 +401,9 @@
   <div class="modal">
     <div class="modal-header">
       <h3><i class="ti ti-user-plus"></i> <span id="modal-pessoa-titulo">Cadastrar pessoa</span></h3>
-      <button class="modal-close" onclick="fecharModal('modal-pessoa')">
-        <i class="ti ti-x"></i>
-      </button>
+      <button class="modal-close" onclick="fecharModal('modal-pessoa')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
-      <input type="hidden" id="p-id">
       <div class="form-section">Dados pessoais</div>
       <div class="form-row">
         <label class="fl">Nome completo *</label>
@@ -412,9 +418,7 @@
           <label class="fl">Sexo</label>
           <select class="fi" id="p-sexo">
             <option value="">Selecione</option>
-            <option>Feminino</option>
-            <option>Masculino</option>
-            <option>Outro</option>
+            <option>Feminino</option><option>Masculino</option><option>Outro</option>
           </select>
         </div>
       </div>
@@ -430,7 +434,7 @@
       <div class="form-row2">
         <div class="form-row">
           <label class="fl">CPF</label>
-          <input class="fi" id="p-cpf" placeholder="000.000.000-00">
+          <input class="fi" id="p-cpf" placeholder="000.000.000-00" maxlength="14">
         </div>
         <div class="form-row">
           <label class="fl">Escolaridade</label>
@@ -441,7 +445,6 @@
           </select>
         </div>
       </div>
-
       <div class="form-section">Saúde</div>
       <div class="form-row">
         <label class="fl">Status de saúde</label>
@@ -483,14 +486,100 @@
   </div>
 </div>
 
+<!-- ===== MODAL ATENDIMENTO ===== -->
+<div class="modal-backdrop" id="modal-atendimento" style="display:none">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3><i class="ti ti-calendar-check"></i> Registrar atendimento</h3>
+      <button class="modal-close" onclick="fecharModal('modal-atendimento')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="at-fid">
+      <div class="form-row">
+        <label class="fl">Data do atendimento *</label>
+        <input class="fi" id="at-data" type="date">
+      </div>
+      <div class="form-row">
+        <label class="fl">Tipo de atendimento</label>
+        <select class="fi" id="at-tipo">
+          <option value="">Selecione</option>
+          <option>Visita domiciliar</option>
+          <option>Entrega de doação</option>
+          <option>Acompanhamento médico</option>
+          <option>Orientação social</option>
+          <option>Ligação/contato</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fl">Descrição / O que foi feito</label>
+        <textarea class="fi" id="at-desc" rows="4" placeholder="Descreva o atendimento realizado..."></textarea>
+      </div>
+      <div class="form-row">
+        <label class="fl">Responsável pelo atendimento</label>
+        <input class="fi" id="at-resp" placeholder="Nome do voluntário ou assistente">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="fecharModal('modal-atendimento')">Cancelar</button>
+      <button class="btn btn-gn" onclick="salvarAtendimento()">
+        <i class="ti ti-check"></i> Salvar atendimento
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL DOAÇÃO ===== -->
+<div class="modal-backdrop" id="modal-doacao" style="display:none">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3><i class="ti ti-gift"></i> Registrar doação recebida</h3>
+      <button class="modal-close" onclick="fecharModal('modal-doacao')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="do-fid">
+      <div class="form-row">
+        <label class="fl">Data da doação *</label>
+        <input class="fi" id="do-data" type="date">
+      </div>
+      <div class="form-row">
+        <label class="fl">Tipo de doação *</label>
+        <select class="fi" id="do-tipo">
+          <option value="">Selecione</option>
+          <option>🛒 Cesta básica</option>
+          <option>💊 Medicamentos</option>
+          <option>🦽 Equipamento médico</option>
+          <option>👕 Roupas / Calçados</option>
+          <option>💰 Apoio financeiro</option>
+          <option>📚 Material escolar</option>
+          <option>🏠 Material de construção</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fl">Descrição da doação</label>
+        <textarea class="fi" id="do-desc" rows="3" placeholder="Detalhe o que foi doado, quantidades..."></textarea>
+      </div>
+      <div class="form-row">
+        <label class="fl">Doador (nome ou anônimo)</label>
+        <input class="fi" id="do-doador" placeholder="Nome do doador ou 'Anônimo'">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="fecharModal('modal-doacao')">Cancelar</button>
+      <button class="btn btn-am" onclick="salvarDoacao()">
+        <i class="ti ti-check"></i> Salvar doação
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MODAL ANÚNCIO ===== -->
 <div class="modal-backdrop" id="modal-anuncio" style="display:none">
   <div class="modal modal-md">
     <div class="modal-header">
       <h3><i class="ti ti-speakerphone"></i> Gerar anúncio de ajuda</h3>
-      <button class="modal-close" onclick="fecharModal('modal-anuncio')">
-        <i class="ti ti-x"></i>
-      </button>
+      <button class="modal-close" onclick="fecharModal('modal-anuncio')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="form-row">
@@ -528,13 +617,11 @@
 <!-- ===== TOAST ===== -->
 <div id="toast" class="toast" style="display:none"></div>
 
+<!-- Módulos SuperAmigos — carregados UMA única vez -->
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/auth.js"></script>
 <script type="module" src="js/app.js"></script>
-
-  <!-- Módulos SuperAmigos -->
-  <script type="module" src="js/firebase.js"></script>
-  <script type="module" src="js/auth.js"></script>
-  <script type="module" src="js/app.js"></script>
-  <script type="module" src="js/familias.js"></script>
-  <script type="module" src="js/anuncio.js"></script>
+<script type="module" src="js/familias.js"></script>
+<script type="module" src="js/anuncio.js"></script>
 </body>
 </html>
