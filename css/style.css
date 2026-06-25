@@ -723,3 +723,197 @@ textarea.fi { resize: vertical; min-height: 70px; }
   /* Esconde sidebar lateral */
   .sidebar { display: none !important; }
 }
+
+/* ══════════════════════════════════════════════
+   SUPERAMIGOS — Adições e melhorias
+   ══════════════════════════════════════════════ */
+
+/* ── Filtros na sidebar ───────────────────────── */
+.filtros-wrap {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+.filtros-title {
+  font-size: 10px; font-weight: 700; color: var(--tx2);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+.fi-sm {
+  padding: 5px 8px !important;
+  font-size: 11px !important;
+  width: 100%;
+}
+.btn-limpar-filtros {
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 6px; background: none; border: none;
+  font-size: 10px; color: var(--tx3); cursor: pointer;
+  font-family: inherit; padding: 0;
+}
+.btn-limpar-filtros:hover { color: var(--or); }
+
+/* ── Botão editar pessoa ──────────────────────── */
+.person-edit {
+  background: none; border: none; cursor: pointer;
+  color: var(--tx2); font-size: 14px;
+  padding: 2px 4px; border-radius: 4px;
+  transition: color .15s;
+}
+.person-edit:hover { color: var(--or); }
+
+/* ── Histórico de atendimentos ────────────────── */
+.hist-card {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+.hist-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-bottom: 4px;
+}
+.hist-data {
+  font-size: 11px; color: var(--tx3); font-weight: 600;
+}
+.hist-desc {
+  font-size: 12px; color: var(--tx); line-height: 1.45; margin-top: 3px;
+}
+.hist-resp {
+  font-size: 11px; color: var(--tx2); margin-top: 4px; font-style: italic;
+}
+
+/* ── Doações ──────────────────────────────────── */
+.doac-card {
+  background: var(--am-l);
+  border: 1.5px solid var(--am-d);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+
+/* ── Relatório ────────────────────────────────── */
+.rel-wrap { padding: 4px 0 20px; }
+.rel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px 14px;
+}
+.rel-header h3 { font-size: 15px; font-weight: 800; color: var(--tx); }
+.rel-stats {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 10px; padding: 0 20px 16px;
+}
+.rel-stat {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.rel-val { font-size: 28px; font-weight: 800; color: var(--tx); }
+.rel-lbl { font-size: 11px; color: var(--tx2); font-weight: 600; }
+.rel-stat-al .rel-val { color: var(--vr); }
+
+.rel-section {
+  font-size: 11px; font-weight: 700; color: var(--tx2);
+  text-transform: uppercase; letter-spacing: .05em;
+  padding: 10px 20px 6px;
+  border-top: 1px solid #f0f0f0;
+}
+.rel-bars { padding: 0 20px 4px; }
+.rel-bar-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 6px;
+}
+.rel-bar-label {
+  font-size: 12px; color: var(--tx); min-width: 140px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rel-bar-track {
+  flex: 1; height: 8px;
+  background: rgba(0,0,0,.08);
+  border-radius: 99px; overflow: hidden;
+}
+.rel-bar-fill {
+  height: 100%; border-radius: 99px;
+  transition: width .4s ease;
+}
+.rel-bar-val {
+  font-size: 12px; font-weight: 700; color: var(--tx);
+  min-width: 24px; text-align: right;
+}
+
+/* Tabela do relatório */
+.rel-table-wrap {
+  overflow-x: auto;
+  padding: 0 20px;
+}
+.rel-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px;
+}
+.rel-table th {
+  text-align: left; font-size: 10px; font-weight: 700;
+  color: var(--tx2); text-transform: uppercase;
+  letter-spacing: .05em; padding: 8px 10px;
+  border-bottom: 2px solid var(--border);
+  background: var(--am-l);
+}
+.rel-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  color: var(--tx); vertical-align: top;
+}
+.rel-table tr:hover td { background: var(--am-bg); }
+.rel-table small { font-size: 10px; color: var(--tx2); }
+
+/* ── Modal confirmação ────────────────────────── */
+.btn-red {
+  background: var(--vr) !important;
+  color: #fff !important;
+  border-color: var(--vr) !important;
+}
+.btn-red:hover { opacity: .88; }
+
+/* Tags de cores */
+.tag { display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;white-space:nowrap; }
+.tr  { background:var(--rl);color:var(--vr);border:1px solid #FFCDD2; }
+.to  { background:var(--ol);color:var(--or);border:1px solid #FFE0B2; }
+.tg  { background:var(--gl);color:var(--vd);border:1px solid #C8E6C9; }
+.tb  { background:var(--bl);color:#1565C0;border:1px solid #BBDEFB; }
+.ty  { background:#FFFDE7;color:#827717;border:1px solid #F0D800; }
+
+/* Empty state */
+.empty-state {
+  text-align:center;padding:40px 20px;color:var(--tx2);font-size:14px;
+}
+.empty-state i { font-size:40px;display:block;margin-bottom:8px;opacity:.5; }
+
+/* Alert card */
+.alert-card {
+  background:var(--rl);border:1.5px solid #FFCDD2;
+  border-radius:12px;padding:14px;margin-bottom:8px;
+}
+.alert-title { font-size:13px;font-weight:700;color:var(--vr); }
+
+/* Btn sizes */
+.btn-xs { padding:5px 10px !important; font-size:11px !important; }
+.btn-sm { padding:6px 12px !important; font-size:12px !important; }
+
+/* Botão verde */
+.btn-gn { background:#2E7D32 !important; color:#fff !important; border-color:#2E7D32 !important; }
+.btn-gn:hover { background:#1B5E20 !important; }
+.btn-wpp { background:var(--wpp) !important; color:#fff !important; border-color:var(--wpp) !important; }
+.btn-or  { background:var(--or)  !important; color:#fff !important; border-color:var(--or) !important; }
+.btn-am  { background:var(--am)  !important; color:var(--tx) !important; border-color:var(--am-d) !important; }
+
+/* Mobile: tabela e relatório */
+@media (max-width: 640px) {
+  .rel-stats { grid-template-columns: 1fr 1fr !important; }
+  .rel-bar-label { min-width: 100px !important; font-size: 11px !important; }
+  .rel-table-wrap { padding: 0 12px !important; }
+  .rel-header { padding: 0 12px 12px !important; }
+  .rel-bars { padding: 0 12px 4px !important; }
+  .rel-section { padding: 10px 12px 6px !important; }
+  .rel-stats { padding: 0 12px 12px !important; }
+}
