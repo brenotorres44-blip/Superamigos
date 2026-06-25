@@ -538,11 +538,13 @@ textarea.fi { resize: vertical; min-height: 70px; }
   border-top: 2px solid var(--am-d);
   z-index: 200;
   padding: 0;
-  height: 60px;
+  height: 68px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.12);
 }
 .bnav-inner {
   display: flex;
   height: 100%;
+  padding: 0 4px;
 }
 .bnav-btn {
   flex: 1;
@@ -550,32 +552,62 @@ textarea.fi { resize: vertical; min-height: 70px; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   background: none;
   border: none;
   cursor: pointer;
   font-family: inherit;
   color: var(--tx2);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .03em;
-  transition: all .2s;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  transition: all .18s;
   position: relative;
-  padding: 6px 0;
+  padding: 8px 2px 6px;
+  min-width: 0;
+  border-radius: 10px;
+  margin: 6px 2px;
 }
-.bnav-btn i { font-size: 22px; }
-.bnav-btn.active { color: var(--tx); }
+.bnav-btn i {
+  font-size: 20px;
+  line-height: 1;
+}
+.bnav-btn.active {
+  color: var(--tx);
+  background: rgba(0,0,0,.1);
+}
 .bnav-btn.active::after {
   content: '';
   position: absolute;
-  top: 0; left: 20%; right: 20%;
+  top: -6px; left: 25%; right: 25%;
   height: 3px;
   background: var(--tx);
   border-radius: 0 0 4px 4px;
 }
+.bnav-btn:active {
+  transform: scale(.94);
+}
+/* Botão Nova destaca como ação principal */
+#bnav-novo {
+  color: var(--or);
+  font-weight: 800;
+}
+#bnav-novo i {
+  background: var(--or);
+  color: #fff;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(230,81,0,.35);
+}
+#bnav-novo.active {
+  background: none;
+  color: var(--or);
+}
 .bnav-badge {
   position: absolute;
-  top: 4px; right: calc(50% - 20px);
+  top: 5px; right: calc(50% - 22px);
   background: var(--vr);
   color: #fff;
   font-size: 9px;
@@ -587,6 +619,7 @@ textarea.fi { resize: vertical; min-height: 70px; }
   align-items: center;
   justify-content: center;
   padding: 0 4px;
+  border: 2px solid var(--am);
 }
 
 /* ── Detalhe em tela cheia no mobile ──────────── */
@@ -595,8 +628,8 @@ textarea.fi { resize: vertical; min-height: 70px; }
   #bottom-nav { display: flex; }
 
   /* Padding inferior para não cobrir conteúdo */
-  .main-content { padding-bottom: 70px !important; }
-  .family-list   { padding-bottom: 80px !important; }
+  .main-content { padding-bottom: 84px !important; }
+  .family-list   { padding-bottom: 94px !important; }
 
   /* Detalhe vira overlay full-screen */
   .detail-panel {
