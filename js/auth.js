@@ -1,12 +1,10 @@
 // ══════════════════════════════════════════════
 //  SUPERAMIGOS — js/auth.js
-//  Login, logout, onAuthStateChanged
 // ══════════════════════════════════════════════
 import { auth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase.js';
 import { unsubFamilias, setUnsubFamilias, toast } from './utils.js';
 import { iniciarListenerFamilias } from './app.js';
 
-// ── Observer de autenticação ───────────────────
 onAuthStateChanged(auth, user => {
   document.getElementById('loading-screen').style.display = 'none';
   if (user) {
@@ -22,7 +20,6 @@ function mostrarApp() {
   iniciarListenerFamilias();
 }
 
-// ── Login ──────────────────────────────────────
 window.fazerLogin = async () => {
   const email = document.getElementById('login-email').value.trim();
   const senha = document.getElementById('login-senha').value;
@@ -30,7 +27,7 @@ window.fazerLogin = async () => {
   const btn   = document.getElementById('btn-login');
   erro.style.display = 'none';
   btn.disabled = true;
-  btn.innerHTML = '<i class="ti ti-loader-2"></i> Entrando...';
+  btn.innerHTML = '<i class="ti ti-loader-2" style="animation:spin 1s linear infinite"></i> Entrando...';
   try {
     await signInWithEmailAndPassword(auth, email, senha);
     document.getElementById('login-screen').style.display = 'none';
@@ -43,9 +40,9 @@ window.fazerLogin = async () => {
   }
 };
 
-// ── Logout ─────────────────────────────────────
 window.fazerLogout = async () => {
-  if (!confirm('Deseja sair do sistema?')) return;
+  const ok = await import('./utils.js').then(m => m.confirmar('Deseja sair do sistema?'));
+  if (!ok) return;
   if (unsubFamilias) unsubFamilias();
   setUnsubFamilias(null);
   await signOut(auth);
@@ -55,7 +52,6 @@ window.fazerLogout = async () => {
   document.getElementById('login-senha').value = '';
 };
 
-// Enter no login
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' &&
       document.getElementById('login-screen').style.display !== 'none') {
