@@ -1,13 +1,12 @@
 // ══════════════════════════════════════════════
 //  SUPERAMIGOS — js/app.js
-//  Listener Firestore, navegação, stats, lista
 // ══════════════════════════════════════════════
 import { db, collection, query, orderBy, onSnapshot } from './firebase.js';
 import { familias, setFamilias, setUnsubFamilias, setCurrentView, setCurrentBairro,
-         setSelectedFamId, currentView, currentBairro, selectedFamId,
+         setSelectedFamId, setFiltroUrgencia, setFiltroTipoNec,
+         currentView, currentBairro, selectedFamId, filtroUrgencia, filtroTipoNec,
          getAlertas, filtradas, urgenciaTag, toast, ini, calcIdade } from './utils.js';
 
-// ── Listener Firestore ─────────────────────────
 export function iniciarListenerFamilias() {
   const q = query(collection(db, 'familias'), orderBy('criadoEm', 'asc'));
   const unsub = onSnapshot(q, snap => {
@@ -56,7 +55,8 @@ window.setView = (v, el) => {
   const titles = {
     familias: '🏠 Famílias cadastradas',
     saude:    '❤️ Saúde & Patologias',
-    alertas:  '⚠️ Alertas ativos'
+    alertas:  '⚠️ Alertas ativos',
+    relatorio:'📊 Relatório & Exportação'
   };
   const vt  = document.getElementById('view-title');
   const bnf = document.getElementById('btn-nova-familia');
@@ -71,11 +71,37 @@ window.setBairro = b => {
   window.renderList();
 };
 
+// Filtros avançados
+window.aplicarFiltros = () => {
+  const fu = document.getElementById('filtro-urgencia')?.value || '';
+  const fn = document.getElementById('filtro-tipo-nec')?.value || '';
+  setFiltroUrgencia(fu);
+  setFiltroTipoNec(fn);
+  window.renderList();
+};
+
+window.limparFiltros = () => {
+  const fu = document.getElementById('filtro-urgencia');
+  const fn = document.getElementById('filtro-tipo-nec');
+  if(fu) fu.value='';
+  if(fn) fn.value='';
+  setFiltroUrgencia('');
+  setFiltroTipoNec('');
+  setCurrentBairro('');
+  window.renderList();
+};
+
 // ── Render lista principal ─────────────────────
 window.renderList = () => {
   atualizarStats();
   const el = document.getElementById('family-list');
   if(!el) return;
+
+  // ─ Relatório ─
+  if (currentView === 'relatorio') {
+    renderRelatorio(el);
+    return;
+  }
 
   // ─ Famílias ─
   if (currentView === 'familias') {
@@ -125,10 +151,16 @@ window.renderList = () => {
 
   // ─ Saúde ─
   } else if (currentView === 'saude') {
+    const q = (document.getElementById('searchInput')?.value||'').toLowerCase();
     const ll = document.getElementById('list-label');
     if(ll) ll.textContent = 'Patologias registradas';
-    const todos = familias.flatMap(f =>
+    let todos = familias.flatMap(f =>
       (f.pessoas||[]).filter(p=>p.doe).map(p=>({...p, fn:f.nome, fobj:f}))
+    );
+    if (q) todos = todos.filter(p =>
+      p.nome.toLowerCase().includes(q) ||
+      p.doe.toLowerCase().includes(q) ||
+      p.fn.toLowerCase().includes(q)
     );
     if (!todos.length) {
       el.innerHTML = `<div class="empty-state"><i class="ti ti-heart"></i><br>Nenhuma patologia registrada.</div>`;
@@ -159,7 +191,13 @@ window.renderList = () => {
   } else {
     const ll = document.getElementById('list-label');
     if(ll) ll.textContent = 'Precisam de atenção urgente';
-    const al = getAlertas();
+    const q = (document.getElementById('searchInput')?.value||'').toLowerCase();
+    let al = getAlertas();
+    if (q) al = al.filter(p =>
+      p.nome.toLowerCase().includes(q) ||
+      (p.doe||'').toLowerCase().includes(q) ||
+      p.fn.toLowerCase().includes(q)
+    );
     if (!al.length) {
       el.innerHTML = `<div class="empty-state"><i class="ti ti-circle-check"></i><br>✅ Nenhum alerta ativo!</div>`;
       return;
@@ -186,6 +224,142 @@ window.renderList = () => {
   }
 };
 
+// ── Relatório ──────────────────────────────────
+function renderRelatorio(el) {
+  const ll = document.getElementById('list-label');
+  if(ll) ll.textContent = 'Visão geral dos dados';
+
+  const totalF  = familias.length;
+  const totalP  = familias.reduce((a,f)=>a+(f.pessoas||[]).length,0);
+  const totalPat= familias.reduce((a,f)=>a+(f.pessoas||[]).filter(p=>p.doe).length,0);
+  const totalAl = getAlertas().length;
+
+  // Contagem por urgência
+  const urg = {alta:0, media:0, baixa:0, sem:0};
+  familias.forEach(f => {
+    if (f.urgencia==='alta') urg.alta++;
+    else if (f.urgencia==='media') urg.media++;
+    else if (f.urgencia==='baixa') urg.baixa++;
+    else urg.sem++;
+  });
+
+  // Contagem por bairro
+  const bairroMap = {};
+  familias.forEach(f => {
+    const b = f.bairro||'Não informado';
+    bairroMap[b] = (bairroMap[b]||0)+1;
+  });
+  const bairros = Object.entries(bairroMap).sort((a,b)=>b[1]-a[1]);
+
+  // Contagem por tipo de necessidade
+  const necMap = {};
+  familias.forEach(f => {
+    if (f.tipoNec) necMap[f.tipoNec] = (necMap[f.tipoNec]||0)+1;
+  });
+  const necessidades = Object.entries(necMap).sort((a,b)=>b[1]-a[1]);
+
+  // Patologias mais comuns
+  const doeMap = {};
+  familias.forEach(f => (f.pessoas||[]).forEach(p => {
+    if (p.doe) {
+      const d = p.doe.toLowerCase().trim();
+      doeMap[d] = (doeMap[d]||0)+1;
+    }
+  }));
+  const doencas = Object.entries(doeMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  el.innerHTML = `
+    <div class="rel-wrap">
+      <div class="rel-header">
+        <h3>📊 Relatório SuperAmigos</h3>
+        <button class="btn btn-am" onclick="window.exportarCSV()">
+          <i class="ti ti-file-spreadsheet"></i> Exportar CSV
+        </button>
+      </div>
+
+      <div class="rel-stats">
+        <div class="rel-stat"><span class="rel-val">${totalF}</span><span class="rel-lbl">Famílias</span></div>
+        <div class="rel-stat"><span class="rel-val">${totalP}</span><span class="rel-lbl">Pessoas</span></div>
+        <div class="rel-stat"><span class="rel-val">${totalPat}</span><span class="rel-lbl">Patologias</span></div>
+        <div class="rel-stat rel-stat-al"><span class="rel-val">${totalAl}</span><span class="rel-lbl">Alertas</span></div>
+      </div>
+
+      <div class="rel-section">🔴 Urgência das famílias</div>
+      <div class="rel-bars">
+        ${barraRel('🔴 Alta', urg.alta, totalF, '#C62828')}
+        ${barraRel('🟠 Média', urg.media, totalF, '#E65100')}
+        ${barraRel('🟡 Baixa', urg.baixa, totalF, '#F5C800')}
+        ${barraRel('⚪ Sem urgência', urg.sem, totalF, '#aaa')}
+      </div>
+
+      <div class="rel-section">📍 Famílias por bairro</div>
+      <div class="rel-bars">
+        ${bairros.map(([b,n])=>barraRel(b,n,totalF,'#1565C0')).join('')}
+      </div>
+
+      ${necessidades.length ? `
+      <div class="rel-section">🙏 Necessidades mais frequentes</div>
+      <div class="rel-bars">
+        ${necessidades.map(([n,v])=>barraRel(n,v,totalF,'#6A1B9A')).join('')}
+      </div>` : ''}
+
+      ${doencas.length ? `
+      <div class="rel-section">❤️ Patologias mais comuns</div>
+      <div class="rel-bars">
+        ${doencas.map(([d,v])=>barraRel(d,v,totalPat||1,'#B71C1C')).join('')}
+      </div>` : ''}
+
+      <div class="rel-section">📋 Lista completa de famílias</div>
+      <div class="rel-table-wrap">
+        <table class="rel-table">
+          <thead><tr>
+            <th>Família</th><th>Bairro</th><th>Membros</th><th>Urgência</th><th>Atend.</th><th>Necessidade</th>
+          </tr></thead>
+          <tbody>
+            ${familias.map(f=>`<tr>
+              <td><strong>${f.nome}</strong><br><small>${f.responsavel||''}</small></td>
+              <td>${f.bairro||'—'}</td>
+              <td>${(f.pessoas||[]).length}</td>
+              <td>${f.urgencia==='alta'?'🔴 Alta':f.urgencia==='media'?'🟠 Média':f.urgencia==='baixa'?'🟡 Baixa':'—'}</td>
+              <td>${f.atend||0}</td>
+              <td style="font-size:11px">${f.tipoNec||'—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function barraRel(label, val, total, cor) {
+  const pct = total > 0 ? Math.round((val/total)*100) : 0;
+  return `<div class="rel-bar-row">
+    <div class="rel-bar-label">${label}</div>
+    <div class="rel-bar-track">
+      <div class="rel-bar-fill" style="width:${pct}%;background:${cor}"></div>
+    </div>
+    <div class="rel-bar-val">${val}</div>
+  </div>`;
+}
+
+// ── Exportar CSV ────────────────────────────────
+window.exportarCSV = () => {
+  const linhas = [
+    ['Família','Responsável','Bairro','Cidade','Tel','WhatsApp','Membros','Renda','Benefício','Urgência','Tipo Necessidade','Necessidade','Atendimentos','Último Atend.'],
+    ...familias.map(f => [
+      f.nome, f.responsavel, f.bairro, f.cidade, f.tel, f.wpp,
+      (f.pessoas||[]).length, f.renda, f.ben, f.urgencia,
+      f.tipoNec, f.nec, f.atend||0, f.ultimoAtend||''
+    ])
+  ];
+  const csv = linhas.map(l => l.map(v => `"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'superamigos_familias.csv';
+  a.click(); URL.revokeObjectURL(url);
+  toast('✅ CSV exportado!');
+};
+
 // ── Detalhe família ────────────────────────────
 window.selecionarFamilia = id => {
   setSelectedFamId(id);
@@ -198,7 +372,6 @@ window.selecionarFamilia = id => {
     panel.style.display = 'flex';
     panel.style.flexDirection = 'column';
     if(isMobile) {
-      // Pequeno delay para a transição funcionar
       requestAnimationFrame(() => panel.classList.add('open'));
       if(backBtn) backBtn.style.display = '';
       document.body.style.overflow = 'hidden';
@@ -223,14 +396,14 @@ window.fecharDetalhe = () => {
   }
 };
 
-// ── View mobile (nav inferior) ─────────────────
 window.setViewMobile = (v, el) => {
-  // Atualiza botões nav inferior
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  // Atualiza view
   setCurrentView(v);
-  const titles = { familias:'🏠 Famílias cadastradas', saude:'❤️ Saúde & Patologias', alertas:'⚠️ Alertas ativos' };
+  const titles = {
+    familias:'🏠 Famílias cadastradas', saude:'❤️ Saúde & Patologias',
+    alertas:'⚠️ Alertas ativos', relatorio:'📊 Relatório'
+  };
   const vt = document.getElementById('view-title');
   if(vt) vt.textContent = titles[v];
   const bnf = document.getElementById('btn-nova-familia');
@@ -239,7 +412,6 @@ window.setViewMobile = (v, el) => {
   window.renderList();
 };
 
-// ── Fechar modal clicando no backdrop ──────────
 document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-backdrop'))
     e.target.style.display = 'none';
