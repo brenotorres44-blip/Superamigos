@@ -403,6 +403,8 @@ nav { flex: 1; padding: 6px 0; overflow-y: auto; }
 }
 .btn:hover { background: var(--am-d); }
 .btn-am  { background: var(--am); border-color: var(--am-d); color: var(--tx); }
+.btn-verde { background: #2E7D32; border-color: #1B5E20; color: #fff; }
+.btn-verde:hover { background: #1B5E20; }
 .btn-gn  { background: var(--vd); border-color: #1B5E20; color: #fff; }
 .btn-gn:hover  { background: #1B5E20; }
 .btn-red { background: var(--vr); border-color: #B71C1C; color: #fff; }
