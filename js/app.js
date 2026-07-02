@@ -272,9 +272,14 @@ function renderRelatorio(el) {
     <div class="rel-wrap">
       <div class="rel-header">
         <h3>📊 Relatório SuperAmigos</h3>
-        <button class="btn btn-am" onclick="window.exportarCSV()">
-          <i class="ti ti-file-spreadsheet"></i> Exportar CSV
-        </button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-verde" onclick="window.exportarPDF()">
+            <i class="ti ti-file-type-pdf"></i> Gerar PDF
+          </button>
+          <button class="btn btn-am" onclick="window.exportarCSV()">
+            <i class="ti ti-file-spreadsheet"></i> Exportar CSV
+          </button>
+        </div>
       </div>
 
       <div class="rel-stats">
@@ -351,7 +356,8 @@ window.exportarCSV = () => {
       f.tipoNec, f.nec, f.atend||0, f.ultimoAtend||''
     ])
   ];
-  const csv = linhas.map(l => l.map(v => `"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  // Ponto-e-vírgula: separador padrão do Excel em português (BR)
+  const csv = linhas.map(l => l.map(v => `"${(v??'').toString().replace(/"/g,'""')}"`).join(';')).join('\r\n');
   const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
@@ -359,6 +365,227 @@ window.exportarCSV = () => {
   a.click(); URL.revokeObjectURL(url);
   toast('✅ CSV exportado!');
 };
+
+// ── Exportar PDF ────────────────────────────────
+window.exportarPDF = () => {
+  if (!window.jspdf) { toast('⚠️ Recarregue a página e tente novamente'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W = doc.internal.pageSize.getWidth();
+  const azul   = [21, 101, 192];
+  const cinza  = [100, 100, 100];
+  const hoje   = new Date();
+  const dataStr = hoje.toLocaleDateString('pt-BR') + ' às ' + hoje.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+  // ── Cabeçalho ──
+  doc.setFillColor(...azul);
+  doc.rect(0, 0, W, 30, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(20);
+  doc.text('SuperAmigos', 14, 14);
+  doc.setFontSize(11);
+  doc.setFont('helvetica','normal');
+  doc.text('Relatório Geral de Famílias', 14, 22);
+  doc.setFontSize(9);
+  doc.text('Gerado em ' + dataStr, W - 14, 22, { align:'right' });
+
+  // ── Estatísticas gerais ──
+  const totalF   = familias.length;
+  const totalP   = familias.reduce((a,f)=>a+(f.pessoas||[]).length,0);
+  const totalPat = familias.reduce((a,f)=>a+(f.pessoas||[]).filter(p=>p.doe).length,0);
+  const totalAl  = getAlertas().length;
+  const totalAt  = familias.reduce((a,f)=>a+(f.atend||0),0);
+
+  let y = 40;
+  doc.setTextColor(...azul);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(13);
+  doc.text('Resumo Geral', 14, y);
+  y += 4;
+
+  const cards = [
+    ['Famílias', totalF], ['Pessoas', totalP], ['Patologias', totalPat],
+    ['Alertas', totalAl], ['Atendimentos', totalAt]
+  ];
+  const cw = (W - 28 - 4*4) / 5;
+  cards.forEach(([lbl,val],i)=>{
+    const x = 14 + i*(cw+4);
+    doc.setFillColor(240, 245, 252);
+    doc.setDrawColor(...azul);
+    doc.roundedRect(x, y, cw, 18, 2, 2, 'FD');
+    doc.setTextColor(...azul);
+    doc.setFontSize(15);
+    doc.setFont('helvetica','bold');
+    doc.text(String(val), x + cw/2, y + 8, { align:'center' });
+    doc.setTextColor(...cinza);
+    doc.setFontSize(8);
+    doc.setFont('helvetica','normal');
+    doc.text(lbl, x + cw/2, y + 14, { align:'center' });
+  });
+  y += 28;
+
+  // ── Urgência ──
+  const urg = {alta:0, media:0, baixa:0, sem:0};
+  familias.forEach(f=>{
+    if (f.urgencia==='alta') urg.alta++;
+    else if (f.urgencia==='media') urg.media++;
+    else if (f.urgencia==='baixa') urg.baixa++;
+    else urg.sem++;
+  });
+
+  doc.setTextColor(...azul);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(13);
+  doc.text('Urgência das Famílias', 14, y);
+
+  doc.autoTable({
+    startY: y + 3,
+    head: [['Nível','Famílias','% do total']],
+    body: [
+      ['Alta',   urg.alta,  pctStr(urg.alta, totalF)],
+      ['Média',  urg.media, pctStr(urg.media, totalF)],
+      ['Baixa',  urg.baixa, pctStr(urg.baixa, totalF)],
+      ['Sem urgência', urg.sem, pctStr(urg.sem, totalF)],
+    ],
+    theme:'grid',
+    headStyles:{ fillColor: azul, fontSize: 9 },
+    bodyStyles:{ fontSize: 9 },
+    columnStyles:{ 1:{halign:'center'}, 2:{halign:'center'} },
+    margin:{ left:14, right:14 },
+    didParseCell: d => {
+      if (d.section==='body' && d.column.index===0) {
+        const cores = { 'Alta':[198,40,40], 'Média':[230,81,0], 'Baixa':[180,150,0] };
+        const c = cores[d.cell.raw];
+        if (c) { d.cell.styles.textColor = c; d.cell.styles.fontStyle = 'bold'; }
+      }
+    }
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  // ── Famílias por bairro ──
+  const bairroMap = {};
+  familias.forEach(f=>{ const b=f.bairro||'Não informado'; bairroMap[b]=(bairroMap[b]||0)+1; });
+  const bairros = Object.entries(bairroMap).sort((a,b)=>b[1]-a[1]);
+
+  if (bairros.length) {
+    doc.setTextColor(...azul);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(13);
+    doc.text('Famílias por Bairro', 14, y);
+    doc.autoTable({
+      startY: y + 3,
+      head: [['Bairro','Famílias','% do total']],
+      body: bairros.map(([b,n])=>[b, n, pctStr(n, totalF)]),
+      theme:'grid',
+      headStyles:{ fillColor: azul, fontSize: 9 },
+      bodyStyles:{ fontSize: 9 },
+      columnStyles:{ 1:{halign:'center'}, 2:{halign:'center'} },
+      margin:{ left:14, right:14 },
+    });
+    y = doc.lastAutoTable.finalY + 10;
+  }
+
+  // ── Necessidades ──
+  const necMap = {};
+  familias.forEach(f=>{ if (f.tipoNec) necMap[f.tipoNec]=(necMap[f.tipoNec]||0)+1; });
+  const necessidades = Object.entries(necMap).sort((a,b)=>b[1]-a[1]);
+
+  if (necessidades.length) {
+    doc.setTextColor(...azul);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(13);
+    doc.text('Necessidades Mais Frequentes', 14, y);
+    doc.autoTable({
+      startY: y + 3,
+      head: [['Tipo de necessidade','Famílias']],
+      body: necessidades.map(([n,v])=>[n, v]),
+      theme:'grid',
+      headStyles:{ fillColor:[106,27,154], fontSize: 9 },
+      bodyStyles:{ fontSize: 9 },
+      columnStyles:{ 1:{halign:'center'} },
+      margin:{ left:14, right:14 },
+    });
+    y = doc.lastAutoTable.finalY + 10;
+  }
+
+  // ── Patologias ──
+  const doeMap = {};
+  familias.forEach(f=>(f.pessoas||[]).forEach(p=>{
+    if (p.doe) { const d=p.doe.toLowerCase().trim(); doeMap[d]=(doeMap[d]||0)+1; }
+  }));
+  const doencas = Object.entries(doeMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  if (doencas.length) {
+    doc.setTextColor(...azul);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(13);
+    doc.text('Patologias Mais Comuns', 14, y);
+    doc.autoTable({
+      startY: y + 3,
+      head: [['Patologia','Pessoas']],
+      body: doencas.map(([d,v])=>[d.charAt(0).toUpperCase()+d.slice(1), v]),
+      theme:'grid',
+      headStyles:{ fillColor:[183,28,28], fontSize: 9 },
+      bodyStyles:{ fontSize: 9 },
+      columnStyles:{ 1:{halign:'center'} },
+      margin:{ left:14, right:14 },
+    });
+  }
+
+  // ── Lista completa (nova página) ──
+  doc.addPage();
+  doc.setFillColor(...azul);
+  doc.rect(0, 0, W, 18, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(13);
+  doc.text('Lista Completa de Famílias', 14, 12);
+
+  const urgTxt = u => u==='alta'?'Alta':u==='media'?'Média':u==='baixa'?'Baixa':'—';
+  doc.autoTable({
+    startY: 24,
+    head: [['Família','Responsável','Bairro','Telefone','Membros','Urgência','Atend.','Necessidade']],
+    body: familias.map(f=>[
+      f.nome||'—', f.responsavel||'—', f.bairro||'—', f.tel||f.wpp||'—',
+      (f.pessoas||[]).length, urgTxt(f.urgencia), f.atend||0, f.tipoNec||'—'
+    ]),
+    theme:'striped',
+    headStyles:{ fillColor: azul, fontSize: 8 },
+    bodyStyles:{ fontSize: 8 },
+    columnStyles:{ 4:{halign:'center'}, 6:{halign:'center'} },
+    margin:{ left:10, right:10 },
+    didParseCell: d => {
+      if (d.section==='body' && d.column.index===5) {
+        const cores = { 'Alta':[198,40,40], 'Média':[230,81,0], 'Baixa':[180,150,0] };
+        const c = cores[d.cell.raw];
+        if (c) { d.cell.styles.textColor = c; d.cell.styles.fontStyle = 'bold'; }
+      }
+    }
+  });
+
+  // ── Rodapé em todas as páginas ──
+  const pages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    const H = doc.internal.pageSize.getHeight();
+    doc.setDrawColor(220,220,220);
+    doc.line(14, H-12, W-14, H-12);
+    doc.setTextColor(...cinza);
+    doc.setFontSize(8);
+    doc.setFont('helvetica','normal');
+    doc.text('SuperAmigos — Sistema de Gestão de Famílias', 14, H-7);
+    doc.text(`Página ${i} de ${pages}`, W-14, H-7, { align:'right' });
+  }
+
+  const nomeArq = `relatorio_superamigos_${hoje.toISOString().slice(0,10)}.pdf`;
+  doc.save(nomeArq);
+  toast('✅ PDF gerado!');
+};
+
+function pctStr(v, total) {
+  return total > 0 ? Math.round((v/total)*100) + '%' : '0%';
+}
 
 // ── Detalhe família ────────────────────────────
 window.selecionarFamilia = id => {
