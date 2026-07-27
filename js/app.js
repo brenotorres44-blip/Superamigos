@@ -56,6 +56,7 @@ window.setView = (v, el) => {
     familias: '🏠 Famílias cadastradas',
     saude:    '❤️ Saúde & Patologias',
     alertas:  '⚠️ Alertas ativos',
+    sacolinhas:'🎁 Sacolinhas',
     relatorio:'📊 Relatório & Exportação'
   };
   const vt  = document.getElementById('view-title');
@@ -100,6 +101,12 @@ window.renderList = () => {
   // ─ Relatório ─
   if (currentView === 'relatorio') {
     renderRelatorio(el);
+    return;
+  }
+
+  // ─ Sacolinhas ─
+  if (currentView === 'sacolinhas') {
+    if (window.renderSacolinhas) window.renderSacolinhas(el);
     return;
   }
 
@@ -629,7 +636,7 @@ window.setViewMobile = (v, el) => {
   setCurrentView(v);
   const titles = {
     familias:'🏠 Famílias cadastradas', saude:'❤️ Saúde & Patologias',
-    alertas:'⚠️ Alertas ativos', relatorio:'📊 Relatório'
+    alertas:'⚠️ Alertas ativos', sacolinhas:'🎁 Sacolinhas', relatorio:'📊 Relatório'
   };
   const vt = document.getElementById('view-title');
   if(vt) vt.textContent = titles[v];
@@ -643,3 +650,5 @@ document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-backdrop'))
     e.target.style.display = 'none';
 });
+
+window.currentViewIsSacolinhas = () => currentView === 'sacolinhas';
