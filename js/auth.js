@@ -4,6 +4,7 @@
 import { auth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase.js';
 import { unsubFamilias, setUnsubFamilias, toast } from './utils.js';
 import { iniciarListenerFamilias } from './app.js';
+import { iniciarListenerSacolinhas } from './sacolinhas.js';
 
 onAuthStateChanged(auth, user => {
   document.getElementById('loading-screen').style.display = 'none';
@@ -18,6 +19,7 @@ function mostrarApp() {
   document.getElementById('app').style.display          = 'flex';
   document.getElementById('login-screen').style.display = 'none';
   iniciarListenerFamilias();
+  iniciarListenerSacolinhas();
 }
 
 window.fazerLogin = async () => {
