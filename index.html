@@ -636,21 +636,29 @@
     </div>
     <div class="modal-body">
       <input type="hidden" id="sac-id">
-      <div class="form-section">Cadastro</div>
+
+      <div class="form-section">Identificação</div>
+      <div class="form-row">
+        <label class="fl">Nr Cadastro *</label>
+        <input class="fi" id="sac-numero" type="number" min="1" placeholder="Ex: 1">
+      </div>
       <div class="form-row2">
         <div class="form-row">
-          <label class="fl">Cadastro Nº *</label>
-          <input class="fi" id="sac-numero" type="number" min="1" placeholder="Ex: 2320">
+          <label class="fl">Comunidade *</label>
+          <input class="fi" id="sac-comunidade" list="lista-comunidades" placeholder="Ex: Baraldi">
+          <datalist id="lista-comunidades"></datalist>
         </div>
         <div class="form-row">
-          <label class="fl">Comunidade *</label>
-          <input class="fi" id="sac-comunidade" placeholder="Ex: Jd. Santo André - Líder Dedé">
+          <label class="fl">Líder</label>
+          <input class="fi" id="sac-lider" list="lista-lideres" placeholder="Ex: Silmara">
+          <datalist id="lista-lideres"></datalist>
         </div>
       </div>
+
       <div class="form-section">Dados da criança</div>
       <div class="form-row">
-        <label class="fl">Nome *</label>
-        <input class="fi" id="sac-nome" placeholder="Nome completo da criança">
+        <label class="fl">Nome da criança *</label>
+        <input class="fi" id="sac-nome" placeholder="Nome completo">
       </div>
       <div class="form-row2">
         <div class="form-row">
@@ -663,31 +671,31 @@
         </div>
         <div class="form-row">
           <label class="fl">Idade</label>
-          <input class="fi" id="sac-idade" type="number" min="0" max="17" placeholder="Ex: 8">
+          <input class="fi" id="sac-idade" placeholder="Ex: 8 anos ou 9 meses">
         </div>
       </div>
       <div class="form-row2">
         <div class="form-row">
-          <label class="fl">Nr de roupa</label>
-          <input class="fi" id="sac-roupa" placeholder="Ex: 10">
+          <label class="fl">Nr Roupa</label>
+          <input class="fi" id="sac-roupa" placeholder="Ex: 2, 10, P, M...">
         </div>
         <div class="form-row">
-          <label class="fl">Nr de calçado</label>
-          <input class="fi" id="sac-calcado" placeholder="Ex: 31/33">
+          <label class="fl">Nr Calçado</label>
+          <input class="fi" id="sac-calcado" placeholder="Ex: 21, 31/33...">
         </div>
       </div>
       <div class="form-row">
         <label class="fl">Necessidade especial</label>
-        <input class="fi" id="sac-necesp" placeholder="Ex: Não" value="Não">
+        <input class="fi" id="sac-necesp" list="lista-necesp" placeholder="Ex: Não" value="Não">
+        <datalist id="lista-necesp">
+          <option value="Não"></option>
+        </datalist>
       </div>
-      <div class="form-section">Entrega e observações</div>
+
+      <div class="form-section">Impressão</div>
       <div class="form-row">
         <label class="fl">Entregar a sacolinha até o dia</label>
         <input class="fi" id="sac-entrega" placeholder="Ex: 14/11/2025">
-      </div>
-      <div class="form-row">
-        <label class="fl">Observações (não sai na etiqueta)</label>
-        <textarea class="fi" id="sac-obs" placeholder="Informações internas..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
