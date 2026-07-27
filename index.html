@@ -636,49 +636,58 @@
     </div>
     <div class="modal-body">
       <input type="hidden" id="sac-id">
-      <div class="form-section">Dados da criança</div>
-      <div class="form-row">
-        <label class="fl">Nome da criança *</label>
-        <input class="fi" id="sac-nome" placeholder="Nome completo">
-      </div>
+      <div class="form-section">Cadastro</div>
       <div class="form-row2">
         <div class="form-row">
-          <label class="fl">Idade</label>
-          <input class="fi" id="sac-idade" type="number" min="0" max="17" placeholder="Ex: 7">
+          <label class="fl">Cadastro Nº *</label>
+          <input class="fi" id="sac-numero" type="number" min="1" placeholder="Ex: 2320">
         </div>
+        <div class="form-row">
+          <label class="fl">Comunidade *</label>
+          <input class="fi" id="sac-comunidade" placeholder="Ex: Jd. Santo André - Líder Dedé">
+        </div>
+      </div>
+      <div class="form-section">Dados da criança</div>
+      <div class="form-row">
+        <label class="fl">Nome *</label>
+        <input class="fi" id="sac-nome" placeholder="Nome completo da criança">
+      </div>
+      <div class="form-row2">
         <div class="form-row">
           <label class="fl">Sexo</label>
           <select class="fi" id="sac-sexo">
             <option value="">Selecione</option>
-            <option>Menino</option>
-            <option>Menina</option>
+            <option>MASCULINO</option>
+            <option>FEMININO</option>
           </select>
         </div>
+        <div class="form-row">
+          <label class="fl">Idade</label>
+          <input class="fi" id="sac-idade" type="number" min="0" max="17" placeholder="Ex: 8">
+        </div>
       </div>
-      <div class="form-section">Tamanhos</div>
       <div class="form-row2">
         <div class="form-row">
-          <label class="fl">Tamanho da roupa</label>
-          <input class="fi" id="sac-roupa" placeholder="Ex: 8, P, M...">
+          <label class="fl">Nr de roupa</label>
+          <input class="fi" id="sac-roupa" placeholder="Ex: 10">
         </div>
         <div class="form-row">
-          <label class="fl">Número do calçado</label>
-          <input class="fi" id="sac-calcado" placeholder="Ex: 32">
+          <label class="fl">Nr de calçado</label>
+          <input class="fi" id="sac-calcado" placeholder="Ex: 31/33">
         </div>
       </div>
-      <div class="form-section">Presente</div>
       <div class="form-row">
-        <label class="fl">Sugestão de presente</label>
-        <input class="fi" id="sac-sugestao" placeholder="Ex: Boneca, bola, carrinho...">
+        <label class="fl">Necessidade especial</label>
+        <input class="fi" id="sac-necesp" placeholder="Ex: Não" value="Não">
       </div>
-      <div class="form-section">Vínculo e observações</div>
+      <div class="form-section">Entrega e observações</div>
       <div class="form-row">
-        <label class="fl">Família (opcional)</label>
-        <select class="fi" id="sac-familia"></select>
+        <label class="fl">Entregar a sacolinha até o dia</label>
+        <input class="fi" id="sac-entrega" placeholder="Ex: 14/11/2025">
       </div>
       <div class="form-row">
-        <label class="fl">Observações</label>
-        <textarea class="fi" id="sac-obs" placeholder="Informações adicionais..."></textarea>
+        <label class="fl">Observações (não sai na etiqueta)</label>
+        <textarea class="fi" id="sac-obs" placeholder="Informações internas..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -694,6 +703,7 @@
 <script type="module" src="js/auth.js"></script>
 <script type="module" src="js/app.js"></script>
 <script type="module" src="js/sacolinhas.js"></script>
+<script type="module" src="js/dados_importacao.js"></script>
 <script type="module" src="js/familias.js"></script>
 <script type="module" src="js/anuncio.js"></script>
 </body>
