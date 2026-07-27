@@ -11,6 +11,7 @@ let unsubSac = null;
 let filtroStatusSac = '';
 let filtroComSac    = '';
 let filtroLiderSac  = '';
+let filtroIdadeSac  = '';
 let buscaSac        = '';
 
 export function iniciarListenerSacolinhas() {
@@ -30,6 +31,30 @@ function atualizarBadgeSac() {
   const b = document.getElementById('badge-sacolinhas');
   if (b) { b.textContent = pend; b.style.display = pend > 0 ? '' : 'none'; }
 }
+
+// Converte idade em texto livre ("9 meses", "1 ano e 2 meses", "RN", "8")
+// para número de anos, permitindo filtrar por faixa etária
+export function idadeEmAnos(txt) {
+  if (txt === null || txt === undefined || txt === '') return null;
+  const t = String(txt).toLowerCase().trim();
+  if (/rec[eé]m|\brn\b|nascid/.test(t)) return 0;
+  const anos = t.match(/(\d+)\s*ano/);
+  if (anos) return parseInt(anos[1], 10);
+  if (/m[eê]s|meses|dias?\b/.test(t)) return 0;   // meses ou dias = menos de 1 ano
+  const num = t.match(/^0*(\d+)/);
+  if (num) return parseInt(num[1], 10);
+  return null;
+}
+
+const FAIXAS_IDADE = [
+  { v:'bebe',  rot:'👶 Menos de 1 ano', teste: a => a === 0 },
+  { v:'1-3',   rot:'1 a 3 anos',        teste: a => a >= 1  && a <= 3 },
+  { v:'4-6',   rot:'4 a 6 anos',        teste: a => a >= 4  && a <= 6 },
+  { v:'7-9',   rot:'7 a 9 anos',        teste: a => a >= 7  && a <= 9 },
+  { v:'10-12', rot:'10 a 12 anos',      teste: a => a >= 10 && a <= 12 },
+  { v:'13+',   rot:'13 anos ou mais',   teste: a => a >= 13 },
+  { v:'sem',   rot:'Idade não informada', teste: a => a === null },
+];
 
 // Separa "Baraldi- Líder Silmara" em comunidade e líder
 // (para registros antigos que ainda têm tudo junto)
@@ -61,6 +86,10 @@ window.renderSacolinhas = (el) => {
   if (filtroStatusSac) list = list.filter(s => (s.status||'aguardando') === filtroStatusSac);
   if (filtroComSac)    list = list.filter(s => partesComunidade(s).com === filtroComSac);
   if (filtroLiderSac)  list = list.filter(s => partesComunidade(s).lider === filtroLiderSac);
+  if (filtroIdadeSac) {
+    const faixa = FAIXAS_IDADE.find(f => f.v === filtroIdadeSac);
+    if (faixa) list = list.filter(s => faixa.teste(idadeEmAnos(s.idade)));
+  }
   if (buscaSac) {
     const t = buscaSac.toLowerCase();
     list = list.filter(s =>
@@ -111,12 +140,19 @@ window.renderSacolinhas = (el) => {
           <option value="">👤 Todos os líderes</option>
           ${lideres.map(l=>`<option value="${l.replace(/"/g,'&quot;')}" ${filtroLiderSac===l?'selected':''}>${l}</option>`).join('')}
         </select>
+        <select class="fi" style="flex:1;min-width:120px" onchange="window.filtrarIdade(this.value)">
+          <option value="">🎂 Todas as idades</option>
+          ${FAIXAS_IDADE.map(f=>{
+            const qtd = todas.filter(s=>f.teste(idadeEmAnos(s.idade))).length;
+            return qtd ? `<option value="${f.v}" ${filtroIdadeSac===f.v?'selected':''}>${f.rot} (${qtd})</option>` : '';
+          }).join('')}
+        </select>
         <select class="fi" style="max-width:140px" onchange="window.filtrarSacolinha(this.value)">
           <option value=""            ${filtroStatusSac===''           ?'selected':''}>Todas</option>
           <option value="aguardando"  ${filtroStatusSac==='aguardando' ?'selected':''}>🎁 Aguardando</option>
           <option value="entregue"    ${filtroStatusSac==='entregue'   ?'selected':''}>✅ Entregues</option>
         </select>
-        ${(filtroComSac||filtroLiderSac||filtroStatusSac||buscaSac) ? `
+        ${(filtroComSac||filtroLiderSac||filtroStatusSac||filtroIdadeSac||buscaSac) ? `
         <button class="btn btn-sm" onclick="window.limparFiltrosSac()" title="Limpar filtros">
           <i class="ti ti-filter-off"></i>
         </button>` : ''}
@@ -185,7 +221,8 @@ window.buscarSacolinha    = v => { buscaSac = v; refresh(); };
 window.filtrarSacolinha   = v => { filtroStatusSac = v; refresh(); };
 window.filtrarComunidade  = v => { filtroComSac = v; refresh(); };
 window.filtrarLider       = v => { filtroLiderSac = v; refresh(); };
-window.limparFiltrosSac   = () => { buscaSac=''; filtroStatusSac=''; filtroComSac=''; filtroLiderSac=''; refresh(); };
+window.filtrarIdade       = v => { filtroIdadeSac = v; refresh(); };
+window.limparFiltrosSac   = () => { buscaSac=''; filtroStatusSac=''; filtroComSac=''; filtroLiderSac=''; filtroIdadeSac=''; refresh(); };
 function refresh() {
   const el = document.getElementById('family-list');
   if (el) window.renderSacolinhas(el);
@@ -341,31 +378,36 @@ function desenharEtiquetaMeia(pdf, s, oy) {
   pdf.setFontSize(12);
   pdf.text(String(s.numero || ''), 62, Y(36.3), { align: 'center' });
 
-  // Comunidade
-  pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(9.5);
-  pdf.text('COMUNIDADE:', 10, Y(45));
-  pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(10);
-  const comTxt = s.lider ? `${s.comunidade || ''} - Líder ${s.lider}` : String(s.comunidade || '');
-  pdf.text(pdf.splitTextToSize(comTxt, 108)[0] || '', 40, Y(45));
-
-  // Campos da criança
-  const campo = (rotulo, valor, x, y, tr = 9.5, tv = 10) => {
+  // Campos (rótulo em negrito + valor; encolhe a fonte se não couber)
+  const campo = (rotulo, valor, x, y, larguraMax, tr = 9.5, tv = 10) => {
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(tr);
     pdf.text(rotulo, x, Y(y));
     const w = pdf.getTextWidth(rotulo + ' ');
-    pdf.setFontSize(tv);
-    pdf.text(String(valor ?? ''), x + w + 1, Y(y));
+    const txt = String(valor ?? '');
+    let tam = tv;
+    if (larguraMax) {
+      const disp = larguraMax - w;
+      pdf.setFontSize(tam);
+      while (tam > 6 && pdf.getTextWidth(txt) > disp) {
+        tam -= 0.3;
+        pdf.setFontSize(tam);
+      }
+    }
+    pdf.setFontSize(tam);
+    pdf.text(txt, x + w + 1, Y(y));
   };
 
-  campo('NOME:', pdf.splitTextToSize(String(s.nome || ''), 108)[0] || '', 10, 53, 10, 10.5);
-  campo('SEXO:', s.sexo, 10, 61);
-  campo('IDADE:', s.idade, 88, 61);
-  campo('NR DE ROUPA:', s.roupa, 10, 69);
-  campo('NR DE CALÇADO:', s.calcado, 88, 69);
-  campo('NECESSIDADE ESPECIAL:', s.necesp || 'Não', 10, 77);
+  // Comunidade e Líder — campos separados
+  campo('COMUNIDADE:', s.comunidade, 10, 45, 76);
+  campo('LÍDER:', s.lider, 88, 45, 68);
+
+  campo('NOME:', s.nome, 10, 53, 146, 10, 10.5);
+  campo('SEXO:', s.sexo, 10, 61, 76);
+  campo('IDADE:', s.idade, 88, 61, 68);
+  campo('NR DE ROUPA:', s.roupa, 10, 69, 76);
+  campo('NR DE CALÇADO:', s.calcado, 88, 69, 68);
+  campo('NECESSIDADE ESPECIAL:', s.necesp || 'Não', 10, 77, 146);
 
   // Espaço para a foto da criança
   const fx = 158, fy = Y(42), fw = 44, fh = 36;
