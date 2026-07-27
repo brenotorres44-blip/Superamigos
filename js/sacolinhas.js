@@ -64,8 +64,11 @@ window.renderSacolinhas = (el) => {
           <button class="btn" onclick="window.importarSacolinhas()" title="Importar lista oficial">
             <i class="ti ti-database-import"></i> Importar lista
           </button>
-          ${total ? `<button class="btn btn-verde" onclick="window.etiquetasTodasPDF()">
+          ${total ? `<button class="btn btn-verde" onclick="window.fichasTodasPDF()">
             <i class="ti ti-file-type-pdf"></i> Imprimir fichas
+          </button>
+          <button class="btn btn-verde" onclick="window.etiquetasTodasPDF()">
+            <i class="ti ti-tags"></i> Imprimir etiquetas
           </button>` : ''}
         </div>
       </div>
@@ -117,8 +120,11 @@ function cardSacolinha(s) {
       ? `<div class="sac-presente"><i class="ti ti-wheelchair"></i> Necessidade especial: ${s.necesp}</div>` : ''}
     ${s.obs ? `<div class="sac-obs">${s.obs}</div>` : ''}
     <div class="sac-btns">
-      <button class="btn btn-sm" onclick="window.etiquetaSacolinhaPDF('${s.id}')" title="Gerar ficha">
+      <button class="btn btn-sm" onclick="window.fichaSacolinhaPDF('${s.id}')" title="Ficha completa (A4)">
         <i class="ti ti-file-type-pdf"></i> Ficha
+      </button>
+      <button class="btn btn-sm" onclick="window.etiquetaSacolinhaPDF('${s.id}')" title="Etiqueta para colar">
+        <i class="ti ti-tag"></i> Etiqueta
       </button>
       ${!entregue ? `
       <button class="btn btn-gn btn-sm" onclick="window.marcarEntregueSacolinha('${s.id}')">
@@ -394,7 +400,7 @@ function desenharFicha(pdf, s, fundo) {
   pdf.text('SUPERAMIGOSSCANIA', 123, yR + 0.5);
 }
 
-window.etiquetaSacolinhaPDF = async id => {
+window.fichaSacolinhaPDF = async id => {
   const s = sacolinhas.find(x=>x.id===id);
   if (!s) return;
   if (!window.jspdf) { toast('⚠️ Recarregue a página e tente novamente'); return; }
@@ -406,7 +412,7 @@ window.etiquetaSacolinhaPDF = async id => {
   toast('🏷️ Ficha gerada!');
 };
 
-window.etiquetasTodasPDF = async () => {
+window.fichasTodasPDF = async () => {
   if (!window.jspdf) { toast('⚠️ Recarregue a página e tente novamente'); return; }
   const pendentes = sacolinhas.filter(s => s.status !== 'entregue');
   const alvo = pendentes.length ? pendentes : sacolinhas;
@@ -422,4 +428,111 @@ window.etiquetasTodasPDF = async () => {
   });
   pdf.save(`fichas_sacolinhas_${new Date().toISOString().slice(0,10)}.pdf`);
   toast(`🏷️ ${ordenadas.length} ficha${ordenadas.length!==1?'s':''} gerada${ordenadas.length!==1?'s':''}!`);
+};
+
+// ══════════════════════════════════════════════
+//  ETIQUETA COMPACTA — modelo cartão vermelho
+// ══════════════════════════════════════════════
+function desenharEtiqueta(pdf, s, x, y, w, h) {
+  const vermelho = [200, 30, 30];
+  const verde    = [27, 94, 32];
+  const escuro   = [45, 45, 45];
+  const k = w / 150; // escala (base 150mm de largura)
+
+  // Cartão branco com borda vermelha grossa arredondada
+  pdf.setFillColor(255, 255, 255);
+  pdf.setDrawColor(...vermelho);
+  pdf.setLineWidth(2.4 * k);
+  pdf.roundedRect(x, y, w, h, 5*k, 5*k, 'FD');
+
+  // Faixa verde no rodapé
+  pdf.setDrawColor(...verde);
+  pdf.setLineWidth(1.4 * k);
+  pdf.line(x + 5*k, y + h - 4*k, x + w - 5*k, y + h - 4*k);
+
+  // Cabeçalho vermelho
+  pdf.setFillColor(...vermelho);
+  pdf.roundedRect(x + 4*k, y + 4*k, w - 8*k, 15*k, 3*k, 3*k, 'F');
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(13 * k);
+  pdf.text('SACOLINHA SUPERAMIGOS', x + w/2 - 6*k, y + 13.5*k, { align: 'center' });
+
+  // Círculo verde com o número
+  pdf.setFillColor(...verde);
+  pdf.circle(x + w - 14*k, y + 11.5*k, 5.5*k, 'F');
+  pdf.setFontSize(10 * k);
+  const numStr = String(s.numero || '');
+  pdf.setFontSize((numStr.length > 3 ? 7.5 : 10) * k);
+  pdf.text(numStr, x + w - 14*k, y + 13*k, { align: 'center' });
+
+  // Campos
+  const campos = [
+    ['Nome',    s.nome || ''],
+    ['Idade',   s.idade !== '' && s.idade != null ? s.idade + ' anos' : ''],
+    ['Sexo',    s.sexo || ''],
+    ['Roupa',   s.roupa || ''],
+    ['Calçado', s.calcado || ''],
+    ['Necessidade especial', s.necesp || 'Não'],
+  ];
+
+  let cy = y + 28*k;
+  const lh = (h - 36*k) / campos.length;
+  campos.forEach(([lbl, val]) => {
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(9 * k);
+    pdf.setTextColor(...verde);
+    pdf.text(lbl + ':', x + 8*k, cy);
+    const lblW = pdf.getTextWidth(lbl + ': ');
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10 * k);
+    pdf.setTextColor(...escuro);
+    const maxW = w - 16*k - lblW;
+    const txt = pdf.splitTextToSize(String(val), maxW);
+    pdf.text(txt[0] || '', x + 8*k + lblW, cy);
+
+    // Linha pontilhada até a margem direita
+    const fimTexto = x + 8*k + lblW + pdf.getTextWidth(txt[0] || '') + 2*k;
+    pdf.setDrawColor(190, 190, 190);
+    pdf.setLineWidth(0.25 * k);
+    pdf.setLineDashPattern([1*k, 1*k], 0);
+    pdf.line(Math.min(fimTexto, x + w - 8*k), cy + 0.6*k, x + w - 8*k, cy + 0.6*k);
+    pdf.setLineDashPattern([], 0);
+
+    cy += lh;
+  });
+}
+
+window.etiquetaSacolinhaPDF = id => {
+  const s = sacolinhas.find(x => x.id === id);
+  if (!s) return;
+  if (!window.jspdf) { toast('⚠️ Recarregue a página e tente novamente'); return; }
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [100, 150] });
+  desenharEtiqueta(pdf, s, 5, 5, 140, 90);
+  pdf.save(`etiqueta_${s.numero || ''}_${(s.nome || '').replace(/\s+/g, '_')}.pdf`);
+  toast('🏷️ Etiqueta gerada!');
+};
+
+window.etiquetasTodasPDF = () => {
+  if (!window.jspdf) { toast('⚠️ Recarregue a página e tente novamente'); return; }
+  const pendentes = sacolinhas.filter(s => s.status !== 'entregue');
+  const alvo = pendentes.length ? pendentes : sacolinhas;
+  if (!alvo.length) { toast('Nenhuma sacolinha para imprimir.'); return; }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const ordenadas = [...alvo].sort((a, b) => (a.numero || 0) - (b.numero || 0));
+
+  // 2 etiquetas por página A4 (18 x 12 cm cada, fáceis de recortar)
+  const ew = 180, eh = 120, mx = 15, my = 15, gap = 20;
+  ordenadas.forEach((s, i) => {
+    const pos = i % 2;
+    if (i > 0 && pos === 0) pdf.addPage();
+    desenharEtiqueta(pdf, s, mx, my + pos * (eh + gap), ew, eh);
+  });
+
+  pdf.save(`etiquetas_sacolinhas_${new Date().toISOString().slice(0, 10)}.pdf`);
+  toast(`🏷️ ${ordenadas.length} etiqueta${ordenadas.length !== 1 ? 's' : ''} gerada${ordenadas.length !== 1 ? 's' : ''}!`);
 };
