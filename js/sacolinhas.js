@@ -3,8 +3,8 @@
 //  Ação Especial de Natal — Sacolinhas
 // ══════════════════════════════════════════════
 import { db, collection, doc, addDoc, updateDoc, deleteDoc,
-         onSnapshot, query, orderBy, serverTimestamp } from './firebase.js';
-import { toast, confirmar } from './utils.js';
+         onSnapshot, query, orderBy, serverTimestamp } from './firebase.js?v=3';
+import { toast, confirmar } from './utils.js?v=3';
 
 export let sacolinhas = [];
 let unsubSac = null;
