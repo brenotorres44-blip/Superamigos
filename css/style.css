@@ -1005,3 +1005,28 @@ textarea.fi { resize: vertical; min-height: 70px; }
   .sac-header { flex-direction:column; align-items:stretch; }
   .sac-actions .btn { flex:1; justify-content:center; }
 }
+
+
+/* ══════════ SACOLINHAS — tabela ══════════ */
+.sac-table-wrap {
+  background:#fff; border:1px solid #e2e2e2; border-radius:12px;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+}
+.sac-table { width:100%; border-collapse:collapse; font-size:13px; min-width:860px; }
+.sac-table th {
+  background:#1565C0; color:#fff; text-align:left; padding:9px 10px;
+  font-size:11px; text-transform:uppercase; letter-spacing:.4px;
+  position:sticky; top:0; white-space:nowrap;
+}
+.sac-table td { padding:8px 10px; border-bottom:1px solid #f0f0f0; vertical-align:middle; }
+.sac-table tbody tr:hover { background:#FFF8E1; }
+.sac-table tbody tr:nth-child(even) { background:#fafafa; }
+.sac-table tbody tr:nth-child(even):hover { background:#FFF8E1; }
+.sac-tr-ok td { opacity:.65; }
+.sac-td-num { font-weight:800; color:#C62828; white-space:nowrap; }
+.sac-td-nome { font-weight:700; color:#222; min-width:180px; }
+.sac-td-acoes { white-space:nowrap; }
+.sac-td-acoes .btn { padding:4px 7px; margin-right:2px; }
+@media (max-width:640px) {
+  .sac-table { font-size:12px; }
+}
