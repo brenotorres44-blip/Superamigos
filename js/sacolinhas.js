@@ -178,10 +178,10 @@ window.renderSacolinhas = (el) => {
         <div class="sac-table-wrap">
           <table class="sac-table">
             <thead><tr>
-              <th style="width:30px"><input type="checkbox" title="Selecionar todos os filtrados"
+              <th style="width:56px"><input type="checkbox" title="Selecionar todos os filtrados"
                     ${list.length && list.every(s=>selecionadasSac.has(s.id)) ? 'checked' : ''}
-                    onchange="window.selecionarTodosSac(this.checked)"></th>
-              <th>Nr Cad.</th><th>Comunidade</th><th>Líder</th><th>Nome da criança</th>
+                    onchange="window.selecionarTodosSac(this.checked)"> Nr</th>
+              <th>Comunidade</th><th>Líder</th><th>Nome da criança</th>
               <th>Sexo</th><th>Idade</th><th>Nr Roupa</th><th>Nr Calçado</th>
               <th>Nec. especial</th><th>Status</th><th>Ações</th>
             </tr></thead>
@@ -202,8 +202,8 @@ function linhaSacolinha(s) {
   <tr class="${entregue?'sac-tr-ok':''}${sel?' sac-tr-sel':''}"
       onclick="if(!event.target.closest('button')&&!event.target.closest('a')){window.toggleSelecaoSac('${s.id}')}">
     <td onclick="event.stopPropagation()"><input type="checkbox" class="sac-chk" ${sel?'checked':''}
-          onchange="window.selecionarSacolinha('${s.id}', this.checked)"></td>
-    <td class="sac-td-num">${s.numero||'—'}</td>
+          onchange="window.selecionarSacolinha('${s.id}', this.checked)">
+      <span class="sac-td-num">${s.numero||'—'}</span></td>
     <td>${p.com||'—'}</td>
     <td>${p.lider||'—'}</td>
     <td class="sac-td-nome">${s.nome||'—'}</td>
