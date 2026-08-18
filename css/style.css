@@ -1028,8 +1028,24 @@ textarea.fi { resize: vertical; min-height: 70px; }
 .sac-table tbody tr { cursor:pointer; }
 .sac-table tbody tr td.sac-td-acoes,
 .sac-table tbody tr td.sac-td-acoes * { cursor:default; }
-.sac-chk { width:20px; height:20px; cursor:pointer; }
+.sac-chk { width:20px; height:20px; cursor:pointer; vertical-align:middle; }
 .sac-td-num { font-weight:800; color:#C62828; white-space:nowrap; }
+
+/* Coluna checkbox+número fixa (sticky) para ficar visível ao rolar a tabela no celular */
+.sac-table th:first-child,
+.sac-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #fff;
+  white-space: nowrap;
+  text-align: center;
+}
+.sac-table thead th:first-child { background: #1565C0; z-index: 3; }
+.sac-table tbody tr:nth-child(even) td:first-child { background: #fafafa; }
+.sac-table tbody tr.sac-tr-sel td:first-child { background: #FFF3CD; }
+.sac-table tbody tr:hover td:first-child { background: #FFF8E1; }
+.sac-td-num { display:inline-block; margin-left:4px; vertical-align:middle; }
 .sac-td-nome { font-weight:700; color:#222; min-width:180px; }
 .sac-td-acoes { white-space:nowrap; }
 .sac-td-acoes .btn { padding:4px 7px; margin-right:2px; }
