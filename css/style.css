@@ -482,7 +482,8 @@ nav { flex: 1; padding: 6px 0; overflow-y: auto; }
 }
 .sac-foto-preview img { width:100%; height:100%; object-fit:cover; }
 .sac-foto-preview #sac-foto-icon { font-size:26px; color:#bbb; }
-.sac-foto-btns { display:flex; flex-direction:column; gap:6px; }
+.sac-foto-btns { display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+.sac-foto-btns .btn { white-space:nowrap; }
 .fl {
   font-size: 11px; font-weight: 700; color: var(--tx2);
   display: block; margin-bottom: 4px;
