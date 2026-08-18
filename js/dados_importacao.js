@@ -6,7 +6,7 @@
 // ══════════════════════════════════════════════
 import { db, collection, doc, writeBatch, serverTimestamp } from './firebase.js';
 import { toast, confirmar } from './utils.js';
-import { sacolinhas, partesComunidade } from './sacolinhas.js?v=8';
+import { sacolinhas, partesComunidade } from './sacolinhas.js?v=9';
 
 const DADOS = [
   {n:1,c:'Baraldi',l:'Silmara',no:'Jade Valentim',s:'FEMININO',i:'9 meses',r:'2',ca:'21',ne:'Não'},
