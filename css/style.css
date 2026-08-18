@@ -1025,6 +1025,10 @@ textarea.fi { resize: vertical; min-height: 70px; }
 .sac-tr-ok td { opacity:.65; }
 .sac-tr-sel { background:#FFF3CD !important; }
 .sac-tr-sel:hover { background:#FFECB3 !important; }
+.sac-table tbody tr { cursor:pointer; }
+.sac-table tbody tr td.sac-td-acoes,
+.sac-table tbody tr td.sac-td-acoes * { cursor:default; }
+.sac-chk { width:20px; height:20px; cursor:pointer; }
 .sac-td-num { font-weight:800; color:#C62828; white-space:nowrap; }
 .sac-td-nome { font-weight:700; color:#222; min-width:180px; }
 .sac-td-acoes { white-space:nowrap; }
