@@ -476,8 +476,8 @@ function desenharEtiquetaMeia(pdf, s, oy) {
   // Logo SUPER AMIGOS
   pdf.addImage(ART_LOGO, 'PNG', 78, Y(5), 54, 13);
 
-  // Papai Noel (canto direito)
-  pdf.addImage(ART_SANTA, 'PNG', 172, Y(19), 28, 18.8);
+  // Papai Noel (canto direito) — mais para cima
+  pdf.addImage(ART_SANTA, 'PNG', 172, Y(16), 28, 18.8);
 
   // Título
   pdf.setTextColor(...vermelho);
@@ -523,12 +523,12 @@ function desenharEtiquetaMeia(pdf, s, oy) {
   campo('NOME:', s.nome, 10, 53, 124, 10, 10.5);
   campo('SEXO:', s.sexo, 10, 61, 76);
   campo('IDADE:', s.idade, 88, 61, 46);
-  campo('NR DE ROUPA:', s.roupa, 10, 69, 76);
-  campo('NR DE CALÇADO:', s.calcado, 88, 69, 46);
+  campo('NR ROUPA:', s.roupa, 10, 69, 76);
+  campo('NR CALÇADO:', s.calcado, 88, 69, 46);
   campo('NECESSIDADE ESPECIAL:', s.necesp || 'Não', 10, 77, 124);
 
-  // Espaço para a foto da criança (maior, no lado direito)
-  const fx = 136, fy = Y(41), fw = 62, fh = 75;
+  // Espaço para a foto da criança (maior, no lado direito, mais para cima)
+  const fx = 136, fy = Y(37), fw = 62, fh = 70;
   if (s.foto) {
     try { pdf.addImage(s.foto, 'JPEG', fx, fy, fw, fh); } catch (e) { console.warn('foto inválida', e); }
     pdf.setDrawColor(...preto);
