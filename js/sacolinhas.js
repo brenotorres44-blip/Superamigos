@@ -268,6 +268,66 @@ function refresh() {
   if (el) window.renderSacolinhas(el);
 }
 
+// ── Foto da criança (upload + compressão) ──────
+function comprimirImagem(file, maxLado = 480, qualidade = 0.75) {
+  return new Promise((resolve, reject) => {
+    const leitor = new FileReader();
+    leitor.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height && width > maxLado) {
+          height = Math.round(height * (maxLado / width));
+          width = maxLado;
+        } else if (height >= width && height > maxLado) {
+          width = Math.round(width * (maxLado / height));
+          height = maxLado;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', qualidade));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    leitor.onerror = reject;
+    leitor.readAsDataURL(file);
+  });
+}
+
+window.selecionarFotoSac = async input => {
+  const file = input.files?.[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('⚠️ Selecione um arquivo de imagem.'); return; }
+  try {
+    const dataUrl = await comprimirImagem(file);
+    document.getElementById('sac-foto').value = dataUrl;
+    const prev = document.getElementById('sac-foto-preview');
+    const icon = document.getElementById('sac-foto-icon');
+    prev.src = dataUrl;
+    prev.style.display = 'block';
+    if (icon) icon.style.display = 'none';
+    document.getElementById('sac-foto-remover').style.display = '';
+  } catch (e) {
+    console.error(e);
+    toast('❌ Erro ao processar a foto.');
+  }
+  input.value = '';
+};
+
+window.removerFotoSac = () => {
+  document.getElementById('sac-foto').value = '';
+  const prev = document.getElementById('sac-foto-preview');
+  const icon = document.getElementById('sac-foto-icon');
+  prev.src = '';
+  prev.style.display = 'none';
+  if (icon) icon.style.display = '';
+  document.getElementById('sac-foto-remover').style.display = 'none';
+};
+
 // ── Modal cadastro/edição ──────────────────────
 window.abrirModalSacolinha = (id=null) => {
   const s = id ? sacolinhas.find(x => x.id === id) : null;
@@ -289,6 +349,23 @@ window.abrirModalSacolinha = (id=null) => {
   g('sac-calcado').value   = s?.calcado || '';
   g('sac-necesp').value    = s?.necesp ?? 'Não';
   g('sac-entrega').value   = s?.entrega ?? (ultima?.entrega || '');
+
+  // Foto da criança
+  g('sac-foto').value = s?.foto || '';
+  const prev = document.getElementById('sac-foto-preview');
+  const icon = document.getElementById('sac-foto-icon');
+  const btnRemover = document.getElementById('sac-foto-remover');
+  if (s?.foto) {
+    prev.src = s.foto;
+    prev.style.display = 'block';
+    if (icon) icon.style.display = 'none';
+    if (btnRemover) btnRemover.style.display = '';
+  } else {
+    prev.src = '';
+    prev.style.display = 'none';
+    if (icon) icon.style.display = '';
+    if (btnRemover) btnRemover.style.display = 'none';
+  }
 
   // Sugestões de comunidades e líderes já cadastrados
   const coms = [...new Set(sacolinhas.map(x=>partesComunidade(x).com).filter(Boolean))].sort();
@@ -323,6 +400,7 @@ window.salvarSacolinha = async () => {
     calcado:    g('sac-calcado'),
     necesp:     g('sac-necesp') || 'Não',
     entrega:    g('sac-entrega'),
+    foto:       document.getElementById('sac-foto').value || '',
   };
 
   try {
@@ -440,17 +518,17 @@ function desenharEtiquetaMeia(pdf, s, oy) {
 
   // Comunidade e Líder — campos separados
   campo('COMUNIDADE:', s.comunidade, 10, 45, 76);
-  campo('LÍDER:', s.lider, 88, 45, 68);
+  campo('LÍDER:', s.lider, 88, 45, 46);
 
-  campo('NOME:', s.nome, 10, 53, 146, 10, 10.5);
+  campo('NOME:', s.nome, 10, 53, 124, 10, 10.5);
   campo('SEXO:', s.sexo, 10, 61, 76);
-  campo('IDADE:', s.idade, 88, 61, 68);
+  campo('IDADE:', s.idade, 88, 61, 46);
   campo('NR DE ROUPA:', s.roupa, 10, 69, 76);
-  campo('NR DE CALÇADO:', s.calcado, 88, 69, 68);
-  campo('NECESSIDADE ESPECIAL:', s.necesp || 'Não', 10, 77, 146);
+  campo('NR DE CALÇADO:', s.calcado, 88, 69, 46);
+  campo('NECESSIDADE ESPECIAL:', s.necesp || 'Não', 10, 77, 124);
 
-  // Espaço para a foto da criança
-  const fx = 158, fy = Y(42), fw = 44, fh = 36;
+  // Espaço para a foto da criança (maior, no lado direito)
+  const fx = 136, fy = Y(41), fw = 62, fh = 75;
   if (s.foto) {
     try { pdf.addImage(s.foto, 'JPEG', fx, fy, fw, fh); } catch (e) { console.warn('foto inválida', e); }
     pdf.setDrawColor(...preto);
@@ -465,13 +543,13 @@ function desenharEtiquetaMeia(pdf, s, oy) {
     pdf.setLineDashPattern([], 0);
     pdf.setTextColor(150, 150, 150);
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(7.5);
-    pdf.text('FOTO DA', fx + fw / 2, fy + fh / 2 - 1, { align: 'center' });
-    pdf.text('CRIANÇA', fx + fw / 2, fy + fh / 2 + 3.5, { align: 'center' });
+    pdf.setFontSize(9);
+    pdf.text('FOTO DA', fx + fw / 2, fy + fh / 2 - 2, { align: 'center' });
+    pdf.text('CRIANÇA', fx + fw / 2, fy + fh / 2 + 4, { align: 'center' });
   }
 
-  // Faixa "INFORMAÇÕES IMPORTANTES" com Leitão e Ursinho
-  pdf.addImage(ART_RODAPE, 'PNG', 56, Y(83), 98, 31.4);
+  // Faixa "INFORMAÇÕES IMPORTANTES" com Leitão e Ursinho (encolhida para não invadir a foto)
+  pdf.addImage(ART_RODAPE, 'PNG', 56, Y(83), 78, 25.0);
 
   // Instruções
   pdf.setTextColor(...preto);
