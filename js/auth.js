@@ -1,10 +1,10 @@
 // ══════════════════════════════════════════════
 //  SUPERAMIGOS — js/auth.js
 // ══════════════════════════════════════════════
-import { auth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase.js?v=4';
-import { unsubFamilias, setUnsubFamilias, toast } from './utils.js?v=4';
-import { iniciarListenerFamilias } from './app.js?v=4';
-import { iniciarListenerSacolinhas } from './sacolinhas.js?v=7';
+import { auth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase.js';
+import { unsubFamilias, setUnsubFamilias, toast } from './utils.js';
+import { iniciarListenerFamilias } from './app.js';
+import { iniciarListenerSacolinhas } from './sacolinhas.js';
 
 onAuthStateChanged(auth, user => {
   document.getElementById('loading-screen').style.display = 'none';
