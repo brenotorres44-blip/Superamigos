@@ -3,10 +3,10 @@
 //  CRUD familias, detalhe, membros, historico
 // ══════════════════════════════════════════════
 import { db, doc, addDoc, updateDoc, deleteDoc,
-         collection, serverTimestamp } from './firebase.js?v=3';
+         collection, serverTimestamp } from './firebase.js?v=4';
 import { familias, addingToFamId, setAddingToFamId,
          toast, ini, calcIdade, formatarDataHora,
-         validarCPF, mascaraCPF, mascaraTel, confirmar } from './utils.js?v=3';
+         validarCPF, mascaraCPF, mascaraTel, confirmar } from './utils.js?v=4';
 
 // ── Detalhe ────────────────────────────────────
 function urgenciaDetalhe(f) {
