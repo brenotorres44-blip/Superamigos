@@ -14,6 +14,9 @@ let filtroLiderSac  = '';
 let filtroIdadeSac  = '';
 let buscaSac        = '';
 
+// IDs selecionados para impressão de etiquetas (persiste entre filtros)
+let selecionadasSac = new Set();
+
 export function iniciarListenerSacolinhas() {
   if (unsubSac) return;
   const q = query(collection(db, 'sacolinhas'), orderBy('criadoEm', 'asc'));
@@ -104,6 +107,9 @@ window.renderSacolinhas = (el) => {
 
   if (ll) ll.textContent = `${list.length} sacolinha${list.length!==1?'s':''}`;
 
+  // guarda os ids atualmente filtrados, usado por "selecionar todos"
+  window._sacListIds = list.map(s => s.id);
+
   el.innerHTML = `
     <div class="sac-wrap">
       <div class="sac-header">
@@ -120,7 +126,7 @@ window.renderSacolinhas = (el) => {
             <i class="ti ti-database-import"></i> Importar lista
           </button>
           ${total ? `<button class="btn btn-verde" onclick="window.fichasTodasPDF()">
-            <i class="ti ti-file-type-pdf"></i> Imprimir etiquetas
+            <i class="ti ti-file-type-pdf"></i> Imprimir etiquetas${selecionadasSac.size ? ` (${selecionadasSac.size} selecionada${selecionadasSac.size!==1?'s':''})` : ''}
           </button>
           <button class="btn" onclick="window.exportarPlanilhaSacolinhas()" title="Exportar para Excel">
             <i class="ti ti-file-spreadsheet"></i> Exportar planilha
@@ -156,6 +162,10 @@ window.renderSacolinhas = (el) => {
         <button class="btn btn-sm" onclick="window.limparFiltrosSac()" title="Limpar filtros">
           <i class="ti ti-filter-off"></i>
         </button>` : ''}
+        ${selecionadasSac.size ? `
+        <button class="btn btn-sm" onclick="window.limparSelecaoSac()" title="Limpar seleção">
+          <i class="ti ti-square-off"></i> Limpar seleção (${selecionadasSac.size})
+        </button>` : ''}
       </div>
 
       ${!list.length ? `
@@ -168,6 +178,9 @@ window.renderSacolinhas = (el) => {
         <div class="sac-table-wrap">
           <table class="sac-table">
             <thead><tr>
+              <th style="width:30px"><input type="checkbox" title="Selecionar todos os filtrados"
+                    ${list.length && list.every(s=>selecionadasSac.has(s.id)) ? 'checked' : ''}
+                    onchange="window.selecionarTodosSac(this.checked)"></th>
               <th>Nr Cad.</th><th>Comunidade</th><th>Líder</th><th>Nome da criança</th>
               <th>Sexo</th><th>Idade</th><th>Nr Roupa</th><th>Nr Calçado</th>
               <th>Nec. especial</th><th>Status</th><th>Ações</th>
@@ -185,7 +198,9 @@ function linhaSacolinha(s) {
   const p = partesComunidade(s);
   const sexoTxt = s.sexo === 'FEMININO' ? '👧 F' : s.sexo === 'MASCULINO' ? '👦 M' : '—';
   return `
-  <tr class="${entregue?'sac-tr-ok':''}">
+  <tr class="${entregue?'sac-tr-ok':''}${selecionadasSac.has(s.id)?' sac-tr-sel':''}">
+    <td><input type="checkbox" ${selecionadasSac.has(s.id)?'checked':''}
+          onchange="window.selecionarSacolinha('${s.id}', this.checked)"></td>
     <td class="sac-td-num">${s.numero||'—'}</td>
     <td>${p.com||'—'}</td>
     <td>${p.lider||'—'}</td>
@@ -223,6 +238,23 @@ window.filtrarComunidade  = v => { filtroComSac = v; refresh(); };
 window.filtrarLider       = v => { filtroLiderSac = v; refresh(); };
 window.filtrarIdade       = v => { filtroIdadeSac = v; refresh(); };
 window.limparFiltrosSac   = () => { buscaSac=''; filtroStatusSac=''; filtroComSac=''; filtroLiderSac=''; filtroIdadeSac=''; refresh(); };
+
+// ── Seleção de sacolinhas para impressão de etiquetas ──
+window.selecionarSacolinha = (id, marcado) => {
+  if (marcado) selecionadasSac.add(id);
+  else selecionadasSac.delete(id);
+  refresh();
+};
+
+window.selecionarTodosSac = (marcado) => {
+  const ids = window._sacListIds || [];
+  if (marcado) ids.forEach(id => selecionadasSac.add(id));
+  else ids.forEach(id => selecionadasSac.delete(id));
+  refresh();
+};
+
+window.limparSelecaoSac = () => { selecionadasSac.clear(); refresh(); };
+
 function refresh() {
   const el = document.getElementById('family-list');
   if (el) window.renderSacolinhas(el);
@@ -509,8 +541,16 @@ window.fichaSacolinhaPDF = id => {
 
 window.fichasTodasPDF = () => {
   if (!window.jspdf) { toast('⚠️ Recarregue a página e tente novamente'); return; }
-  const pendentes = sacolinhas.filter(s => s.status !== 'entregue');
-  const alvo = pendentes.length ? pendentes : sacolinhas;
+
+  // Prioridade: se houver sacolinhas marcadas via checkbox, imprime só essas.
+  // Caso contrário, mantém o comportamento anterior (pendentes, ou todas se não houver pendentes).
+  let alvo;
+  if (selecionadasSac.size) {
+    alvo = sacolinhas.filter(s => selecionadasSac.has(s.id));
+  } else {
+    const pendentes = sacolinhas.filter(s => s.status !== 'entregue');
+    alvo = pendentes.length ? pendentes : sacolinhas;
+  }
   if (!alvo.length) { toast('Nenhuma sacolinha para imprimir.'); return; }
 
   const { jsPDF } = window.jspdf;
