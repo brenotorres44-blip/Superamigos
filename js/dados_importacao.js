@@ -4,9 +4,9 @@
 //  n=número c=comunidade l=líder no=nome s=sexo
 //  i=idade r=roupa ca=calçado ne=necessidade especial
 // ══════════════════════════════════════════════
-import { db, collection, doc, writeBatch, serverTimestamp } from './firebase.js?v=3';
-import { toast, confirmar } from './utils.js?v=3';
-import { sacolinhas, partesComunidade } from './sacolinhas.js?v=3';
+import { db, collection, doc, writeBatch, serverTimestamp } from './firebase.js?v=4';
+import { toast, confirmar } from './utils.js?v=4';
+import { sacolinhas, partesComunidade } from './sacolinhas.js?v=4';
 
 const DADOS = [
   {n:1,c:'Baraldi',l:'Silmara',no:'Jade Valentim',s:'FEMININO',i:'9 meses',r:'2',ca:'21',ne:'Não'},
