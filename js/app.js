@@ -1,11 +1,11 @@
 // ══════════════════════════════════════════════
 //  SUPERAMIGOS — js/app.js
 // ══════════════════════════════════════════════
-import { db, collection, query, orderBy, onSnapshot } from './firebase.js?v=3';
+import { db, collection, query, orderBy, onSnapshot } from './firebase.js?v=4';
 import { familias, setFamilias, setUnsubFamilias, setCurrentView, setCurrentBairro,
          setSelectedFamId, setFiltroUrgencia, setFiltroTipoNec,
          currentView, currentBairro, selectedFamId, filtroUrgencia, filtroTipoNec,
-         getAlertas, filtradas, urgenciaTag, toast, ini, calcIdade } from './utils.js?v=3';
+         getAlertas, filtradas, urgenciaTag, toast, ini, calcIdade } from './utils.js?v=4';
 
 export function iniciarListenerFamilias() {
   const q = query(collection(db, 'familias'), orderBy('criadoEm', 'asc'));
