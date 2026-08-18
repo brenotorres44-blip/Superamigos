@@ -4,7 +4,7 @@
 import { auth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase.js';
 import { unsubFamilias, setUnsubFamilias, toast } from './utils.js';
 import { iniciarListenerFamilias } from './app.js';
-import { iniciarListenerSacolinhas } from './sacolinhas.js';
+import { iniciarListenerSacolinhas } from './sacolinhas.js?v=8';
 
 onAuthStateChanged(auth, user => {
   document.getElementById('loading-screen').style.display = 'none';
