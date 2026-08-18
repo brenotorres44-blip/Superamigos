@@ -476,8 +476,8 @@ function desenharEtiquetaMeia(pdf, s, oy) {
   // Logo SUPER AMIGOS
   pdf.addImage(ART_LOGO, 'PNG', 78, Y(5), 54, 13);
 
-  // Papai Noel (canto direito) — mais para cima
-  pdf.addImage(ART_SANTA, 'PNG', 172, Y(16), 28, 18.8);
+  // Papai Noel (canto superior direito, menor e mais alto — abre espaço para a foto)
+  pdf.addImage(ART_SANTA, 'PNG', 180, Y(8), 20, 13.4);
 
   // Título
   pdf.setTextColor(...vermelho);
@@ -527,8 +527,8 @@ function desenharEtiquetaMeia(pdf, s, oy) {
   campo('NR CALÇADO:', s.calcado, 88, 69, 46);
   campo('NECESSIDADE ESPECIAL:', s.necesp || 'Não', 10, 77, 124);
 
-  // Espaço para a foto da criança (maior, no lado direito, mais para cima)
-  const fx = 136, fy = Y(37), fw = 62, fh = 70;
+  // Espaço para a foto da criança (maior, no lado direito, bem mais para cima)
+  const fx = 138, fy = Y(26), fw = 60, fh = 64;
   if (s.foto) {
     try { pdf.addImage(s.foto, 'JPEG', fx, fy, fw, fh); } catch (e) { console.warn('foto inválida', e); }
     pdf.setDrawColor(...preto);
@@ -549,7 +549,7 @@ function desenharEtiquetaMeia(pdf, s, oy) {
   }
 
   // Faixa "INFORMAÇÕES IMPORTANTES" com Leitão e Ursinho (encolhida para não invadir a foto)
-  pdf.addImage(ART_RODAPE, 'PNG', 56, Y(83), 78, 25.0);
+  pdf.addImage(ART_RODAPE, 'PNG', 56, Y(83), 70, 22.4);
 
   // Instruções
   pdf.setTextColor(...preto);
