@@ -6,7 +6,7 @@
   <title>SuperAmigos — Sistema de Famílias</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧡</text></svg>">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
-  <link rel="stylesheet" href="css/style.css?v=4">
+  <link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 
@@ -660,6 +660,25 @@
         <label class="fl">Nome da criança *</label>
         <input class="fi" id="sac-nome" placeholder="Nome completo">
       </div>
+      <div class="form-row">
+        <label class="fl">Foto da criança</label>
+        <div class="sac-foto-wrap">
+          <div class="sac-foto-preview" id="sac-foto-preview-box">
+            <img id="sac-foto-preview" style="display:none">
+            <i class="ti ti-camera" id="sac-foto-icon"></i>
+          </div>
+          <div class="sac-foto-btns">
+            <label class="btn btn-sm" for="sac-foto-input">
+              <i class="ti ti-upload"></i> Escolher foto
+            </label>
+            <input type="file" id="sac-foto-input" accept="image/*" style="display:none" onchange="window.selecionarFotoSac(this)">
+            <button type="button" class="btn btn-sm btn-red" id="sac-foto-remover" style="display:none" onclick="window.removerFotoSac()">
+              <i class="ti ti-trash"></i> Remover
+            </button>
+          </div>
+        </div>
+        <input type="hidden" id="sac-foto">
+      </div>
       <div class="form-row2">
         <div class="form-row">
           <label class="fl">Sexo</label>
@@ -710,7 +729,7 @@
 <script type="module" src="js/firebase.js?v=4"></script>
 <script type="module" src="js/auth.js?v=4"></script>
 <script type="module" src="js/app.js?v=4"></script>
-<script type="module" src="js/sacolinhas.js?v=4"></script>
+<script type="module" src="js/sacolinhas.js?v=5"></script>
 <script type="module" src="js/dados_importacao.js?v=4"></script>
 <script type="module" src="js/familias.js?v=4"></script>
 <script type="module" src="js/anuncio.js?v=4"></script>
