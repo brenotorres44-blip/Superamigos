@@ -197,9 +197,11 @@ function linhaSacolinha(s) {
   const entregue = s.status === 'entregue';
   const p = partesComunidade(s);
   const sexoTxt = s.sexo === 'FEMININO' ? '👧 F' : s.sexo === 'MASCULINO' ? '👦 M' : '—';
+  const sel = selecionadasSac.has(s.id);
   return `
-  <tr class="${entregue?'sac-tr-ok':''}${selecionadasSac.has(s.id)?' sac-tr-sel':''}">
-    <td><input type="checkbox" ${selecionadasSac.has(s.id)?'checked':''}
+  <tr class="${entregue?'sac-tr-ok':''}${sel?' sac-tr-sel':''}"
+      onclick="if(!event.target.closest('button')&&!event.target.closest('a')){window.toggleSelecaoSac('${s.id}')}">
+    <td onclick="event.stopPropagation()"><input type="checkbox" class="sac-chk" ${sel?'checked':''}
           onchange="window.selecionarSacolinha('${s.id}', this.checked)"></td>
     <td class="sac-td-num">${s.numero||'—'}</td>
     <td>${p.com||'—'}</td>
@@ -243,6 +245,12 @@ window.limparFiltrosSac   = () => { buscaSac=''; filtroStatusSac=''; filtroComSa
 window.selecionarSacolinha = (id, marcado) => {
   if (marcado) selecionadasSac.add(id);
   else selecionadasSac.delete(id);
+  refresh();
+};
+
+window.toggleSelecaoSac = (id) => {
+  if (selecionadasSac.has(id)) selecionadasSac.delete(id);
+  else selecionadasSac.add(id);
   refresh();
 };
 
