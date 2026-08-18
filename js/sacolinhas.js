@@ -2,7 +2,7 @@
 //  SUPERAMIGOS — js/sacolinhas.js
 //  Ação Especial de Natal — Sacolinhas
 // ══════════════════════════════════════════════
-import { db, collection, doc, addDoc, updateDoc, deleteDoc,
+import { db, collection, doc, addDoc, updateDoc, deleteDoc, writeBatch,
          onSnapshot, query, orderBy, serverTimestamp } from './firebase.js';
 import { toast, confirmar } from './utils.js';
 
@@ -130,7 +130,10 @@ window.renderSacolinhas = (el) => {
           </button>
           <button class="btn" onclick="window.exportarPlanilhaSacolinhas()" title="Exportar para Excel">
             <i class="ti ti-file-spreadsheet"></i> Exportar planilha
-          </button>` : ''}
+          </button>
+          ${selecionadasSac.size ? `<button class="btn btn-red" onclick="window.excluirSelecionadasSac()">
+            <i class="ti ti-trash"></i> Excluir selecionadas (${selecionadasSac.size})
+          </button>` : ''}` : ''}
         </div>
       </div>
 
@@ -447,6 +450,29 @@ window.excluirSacolinha = async id => {
     await deleteDoc(doc(db,'sacolinhas',id));
     toast('🗑️ Sacolinha excluída.');
   } catch(e){ toast('❌ Erro ao excluir.'); }
+};
+
+// ── Exclusão em lote das sacolinhas selecionadas ────
+window.excluirSelecionadasSac = async () => {
+  const ids = [...selecionadasSac];
+  if (!ids.length) { toast('Nenhuma sacolinha selecionada.'); return; }
+  const ok = await confirmar(`Excluir ${ids.length} sacolinha${ids.length!==1?'s':''} selecionada${ids.length!==1?'s':''}? Esta ação não pode ser desfeita.`);
+  if (!ok) return;
+  try {
+    // Firestore permite no máximo 500 operações por batch
+    const LOTE = 450;
+    for (let i = 0; i < ids.length; i += LOTE) {
+      const fatia = ids.slice(i, i + LOTE);
+      const batch = writeBatch(db);
+      fatia.forEach(id => batch.delete(doc(db,'sacolinhas',id)));
+      await batch.commit();
+    }
+    selecionadasSac.clear();
+    toast(`🗑️ ${ids.length} sacolinha${ids.length!==1?'s':''} excluída${ids.length!==1?'s':''}!`);
+  } catch(e) {
+    console.error(e);
+    toast('❌ Erro ao excluir em lote.');
+  }
 };
 
 // ══════════════════════════════════════════════
