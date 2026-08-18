@@ -3,7 +3,7 @@
 //  Gerador de anúncios de ajuda
 // ══════════════════════════════════════════════
 import { familias, anuncioPessoa, anuncioFamilia,
-         setAnuncio, toast, calcIdade } from './utils.js?v=4';
+         setAnuncio, toast, calcIdade } from './utils.js';
 
 window.abrirAnuncio = (p, f) => {
   setAnuncio(p, f);
